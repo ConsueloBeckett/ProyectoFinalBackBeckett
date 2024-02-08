@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body>
+
+    {{#if cart.length}}
+        <section>
+            <h2>Shopping Cart</h2>
+            {{#each cart}}
+                <p>Product ID: {{this.productId}} - Quantity: {{this.quantity}} Units</p>
+            {{/each}}
+        </section>
+    {{else}}
+        <p>The cart is empty.</p>
+    {{/if}}
+
+    <a href="/api/products">
+        <h3>Return to All Products</h3>
+    </a>
+
+</body>
+
+</html>

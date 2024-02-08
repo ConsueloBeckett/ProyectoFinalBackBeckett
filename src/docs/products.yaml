@@ -1,0 +1,62 @@
+paths:
+  /products:
+    get:
+      summary: Get all products
+      tags:
+        - products
+      responses:
+        "200":
+          description: "Data retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './terceraPreEntrega/src/docs/products-schema.yaml'
+        "500":
+          description: "Internal server error"
+    post:
+      summary: Add a product
+      tags:
+        - products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Product description
+                image:
+                  type: string
+                  description: Product image
+                price:
+                  type: number
+                  description: Product price
+                stock:
+                  type: number
+                  description: Product stock
+                category:
+                  type: string
+                  description: Product category
+                availability:
+                  type: string
+                  description: Product availability
+                owner:
+                  type: string
+                  description: Product owner
+              required:
+                - description
+                - image
+                - price
+                - stock
+                - category
+                - availability
+                - owner
+      responses:
+        "200":
+          description: "Product created successfully"
+        "500":
+          description: "Internal server error"

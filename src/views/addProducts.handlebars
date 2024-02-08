@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Form</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body>
+
+    <form method="POST" action="/api/products">
+        <label for="name">Nombre del Producto</label>
+        <input type="text" name="name" required>
+
+        <label for="description">Descripción del Producto</label>
+        <input type="text" name="description" required>
+
+        <label for="price">Precio Unidad</label>
+        <input type="number" name="price" required>
+
+        <label for="stock">Stock actual</label>
+        <input type="number" name="stock" required>
+
+        <label for="category">Categoría</label>
+        <select name="category" required>
+            <option value="1">Categoría 1</option>
+            <option value="2">Categoría 2</option>
+            <option value="3">Categoría 3</option>
+            <option value="4">Categoría 4</option>
+        </select>
+
+        <label for="thumbnail">Foto del Producto</label>
+        <input type="text" name="thumbnail">
+
+        <button type="submit">Registrar producto</button>
+    </form>
+
+    <a href="/api/products">
+        <h3>Volver a todos los productos</h3>
+    </a>
+
+</body>
+
+</html>

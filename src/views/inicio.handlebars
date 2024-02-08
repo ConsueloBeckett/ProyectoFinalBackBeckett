@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shops - {{pageTitle}}</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Welcome to the shops, just buy</h1>
+    </header>
+
+    <nav>
+        <h3>Sections</h3>
+        <ul>
+            <li class="nav-item"><a href="/login">Login</a></li>
+            <li class="nav-item"><a href="/register">Register User</a></li>
+            <li class="nav-item"><a href="/api/products">Products</a></li>
+            <li class="nav-item"><a href="/api/users/current">Current User</a></li>
+
+            <li class="nav-item">
+                <a href="/addProducts">Add Products to Inventory (Admin Only)</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="user-profile">
+        <h3>Profile of {{user.role}}</h3>
+        <p>Email: {{user.email}}</p>
+        <h3><a href="/api/users/logout" id="logoutButton">Logout</a></h3>
+    </div>
+
+    <a href="/inicio">
+        <h2>Back to Home</h2>
+    </a>
+
+    <a href="/api/products">
+        <h3>Go to All Products</h3>
+    </a>
+
+    <div class="container">
+        <div class="infoProd">
+            <h3>Lista de Productos</h3>
+            <div class="detalleProd">
+                <div id="productsContainer">
+                    <ul>
+                        {{#each products}}
+                        <li>
+                            <strong>{{this.description}}</strong><br>
+                            Price: ${{this.price}}<br>
+                            Stock: {{this.stock}}<br>
+                            Category: {{this.category}}<br>
+                            <a href="/products/{{this._id}}?email={{../user.email}}">Ver Detalle</a>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/user.js"></script>
+    <script>
+        document.getElementById('logoutButton').addEventListener('click', cerrarSesion);
+
+        function cerrarSesion() {
+            localStorage.removeItem("token");
+            var userEmail = "{{user.email}}";
+            // Redirigir a la página de logout con el correo como parámetro
+            window.location.href = '/logout?email=' + userEmail;
+        }
+    </script>
+
+</body>
+
+</html>

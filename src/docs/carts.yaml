@@ -1,0 +1,106 @@
+paths:
+  /carts:
+    get:
+      summary: Get all carts
+      tags:
+        - carts
+      responses:
+        "200":
+          description: "Data retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './terceraPreEntrega/src/docs/carts-schema.yaml'
+        "500":
+          description: "Internal server error"
+    post:
+      summary: Add a cart
+      tags:
+        - carts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: string
+                        description: Product ID
+                      quantity:
+                        type: integer
+                        description: Quantity of the product in the cart
+                  description: Array of products in the cart
+              required:
+                - products
+      responses:
+        "200":
+          description: "Cart created successfully"
+        "500":
+          description: "Internal server error"
+  /carts/{cid}/purchase:
+    post:
+      summary: Make a purchase of a cart
+      tags:
+        - carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            type: string
+          description: ID of the cart to purchase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      description:
+                        type: string
+                        description: Product description
+                      image:
+                        type: string
+                        description: URL of the product image
+                      price:
+                        type: number
+                        description: Product price
+                      stock:
+                        type: integer
+                        description: Available stock of the product
+                      category:
+                        type: string
+                        description: Product category
+                      availability:
+                        type: string
+                        enum: ['in_stock', 'out_of_stock']
+                        description: Product availability
+                  description: Array of products to purchase
+                email:
+                  type: string
+                  description: Buyer's email
+              required:
+                - products
+                - email
+      responses:
+        "200":
+          description: "Purchase made successfully. A ticket has been created."
+        "300":
+          description: "Not enough stock to complete the purchase"
+        "401":
+          description: "Cart with the provided ID not found"
+        "500":
+          description: "Internal error processing the purchase"

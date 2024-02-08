@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body>
+
+    <div class="user-login">
+        <form method="POST" action="/api/users/login">
+            <label for="email">Email</label>
+            <input type="email" name="email" required />
+            
+            <label for="password">Password</label>
+            <input type="password" name="password" required />
+            
+            <button type="submit">Login</button>
+        </form>
+
+        <a href="/api/users/github">Login with GitHub</a>
+        <a href="/register">Register</a>
+    </div>
+
+    <a href="/inicio">
+        <h2>Back to Home</h2>
+    </a>
+
+</body>
+
+</html>

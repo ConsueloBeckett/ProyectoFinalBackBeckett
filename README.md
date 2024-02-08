@@ -1,4 +1,4 @@
-# terceraPreEntrega
+# App con carrito de compra 
 
 # Descripción
 Este proyecto está construido utilizando Node.js y Express, con Handlebars como motor de plantillas.
