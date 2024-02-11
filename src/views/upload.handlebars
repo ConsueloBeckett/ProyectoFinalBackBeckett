@@ -1,0 +1,20 @@
+<div class="file-upload">
+  <h1>Upload Files</h1>
+  <h2>User: {{user.name}}</h2>
+  <form action="/api/users/{{uid}}/documents" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="uid" value="{{user._id}}" />
+
+    <label for="identification">Select a file for identification</label>
+    <input type="file" name="documents" id="identification" required />
+
+    <label for="proofOfAddress">Select a file for proof of address</label>
+    <input type="file" name="documents" id="proofOfAddress" required />
+
+    <label for="bankStatement">Select a file for bank statement</label>
+    <input type="file" name="documents" id="bankStatement" required />
+
+    <button type="submit">Upload File</button>
+  </form>
+</div>
+
+<link rel="stylesheet" type="text/css" href="/css/style.css" />

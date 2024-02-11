@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products in the Database</title>
+</head>
+<body>
+    <main>
+    <h1>List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Thumbnail</th>
+                <th>Owner</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+            <tr>
+                <form action="/api/products/update/{{this._id}}?_method=PUT" method="POST">
+                    <input type="hidden" name="_method" value="PUT" />
+                    <td><input type="text" name="name" value="{{this.name}}" /></td>
+                    <td><input type="text" name="description" value="{{this.description}}" /></td>
+                    <td><input type="number" name="price" value="{{this.price}}" /></td>
+                    <td><input type="number" name="stock" value="{{this.stock}}" /></td>
+                    <td><input type="text" name="thumbnail" value="{{this.thumbnail}}" /></td>
+                    <td><input type="text" name="owner" value="{{this.owner}}" /></td>
+                    <td>
+                        <button type="submit">Update</button>
+                    </td>
+                </form>
+                <form action="/api/products/delete/{{this._id}}?_method=DELETE" method="POST">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <td>
+                        <button type="submit">Delete</button>
+                    </td>
+                </form>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

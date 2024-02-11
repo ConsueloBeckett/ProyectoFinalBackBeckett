@@ -14,15 +14,22 @@
         <form method="POST" action="/api/users/login">
             <label for="email">Email</label>
             <input type="email" name="email" required />
-            
+
             <label for="password">Password</label>
             <input type="password" name="password" required />
-            
+
             <button type="submit">Login</button>
         </form>
-
+        <h2>¿Forgot your password?</h2>
+        <form action="/reset" method="get">
+            <button type="submit" class="boton">Restablish</button>
+        </form>
         <a href="/api/users/github">Login with GitHub</a>
         <a href="/register">Register</a>
+
+    <h2>Register here, just click </h2>
+        <a href="/register" class="boton">Registrarse</a>
+    <a href="/api/users/github" class="boton">Ingresar con GitHub</a>
     </div>
 
     <a href="/inicio">

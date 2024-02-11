@@ -14,7 +14,8 @@
     <h2>Welcome {{user.name}} {{user.surname}}</h2>
     <p>Role: {{user.role}}</p>
 
-    <p><a href="/addProducts" class="button">Add Another Product</a></p>
+    <p><a href="/addProducts" class="button">Add Another Product</a></p>    
+    <a href="/api/products/manageProducts" class="boton">Administrate products</a>
 
     {{#each products}}
         <div class="product">

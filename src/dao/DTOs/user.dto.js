@@ -8,16 +8,20 @@ export default class UserDTO {
         this.password = user.password || "";
         this.cart = user.cart || [];
         this.role = user.role || "user";
+        this.documents = user.documents || [];
+        this.last_connection = user.last_connection ? new Date(user.last_connection).toLocaleString() : new Date(Date.now()).toLocaleString();
     }
 
     toSafeObject() {
         return {
-            name: this.name,
+            nname: this.name,
             surname: this.surname,
             email: this.email,
             age: this.age,
             cart: this.cart,
             role: this.role,
+            documents: this.documents,
+            last_connection: this.last_connection,
             password: "********"
         };
     }

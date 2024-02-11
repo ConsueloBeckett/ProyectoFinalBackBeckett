@@ -2,117 +2,126 @@ import UserRepository from "../repositories/users.repository.js"
 
 class UserService {
     constructor() {
-        this.userRepository = new UserRepository()
+        this.userRepository = new UserRepository();
     }
 
     addUser = async (user) => {
         try {
-            const newUser = await this.userRepository.addUser(user)
+            const newUser = await this.userRepository.addUser(user);
             if (!newUser) {
-                return "User not added"
+                return "Usuario no agregado";
             }
             return newUser;
-        } catch (e) {
-            console.error("Error to add user: ", e)
-            return e;
-        }}
+        } catch (error) {
+            req.logger.error("Error al agregar usuario: ", error);
+            return error;
+        }
+    }
 
-    obtainUsers = async () => {
+    getUsers = async () => {
         try {
-            const users = await this.userRepository.obtainUsers()
+            const users = await this.userRepository.getUsers();
             if (!users) {
-                return "there is not users";
+                return "No hay usuarios";
             }
             return users;
-        } catch (e) {
-            console.error("Error to obtain users: ", e)
-            return e
-        }}
+        } catch (error) {
+            req.logger.error("Error al obtener usuarios: ", error);
+            return error;
+        }
+    }
 
-    obtainUserById = async (id) => {
+    getUserById = async (id) => {
         try {
-            const user = await this.userRepository.obtainUserById(id)
+            const user = await this.userRepository.getUserById(id);
             if (!user) {
-                return "User not found"
+                return "Usuario no encontrado";
             }
             return user;
-        } catch (e) {
-            console.error("Error to obtain user by id: ", e)
-            return e;
-        }}
+        } catch (error) {
+            req.logger.error("Error al obtener usuario por id: ", error);
+            return error;
+        }
+    }
 
-    obtainUserByEmail = async (email) => {
+    getUserByEmail = async (email) => {
         try {
-            const user = await this.userRepository.obtainUserByEmail(email)
+            const user = await this.userRepository.getUserByEmail(email);
             if (!user) {
-                return "User not found"
+                return "Usuario no encontrado";
             }
-            return user
-        } catch (e) {
-            console.error("Error to obtain user by email: ", e)
-        }}
+            return user;
+        } catch (error) {
+            req.logger.error("Error al obtener usuario por email: ", error);
+        }
+    }
 
     updateUser = async (id, user) => {
         try {
-            const updatedUser = await this.userRepository.updateUser(id, user)
+            const updatedUser = await this.userRepository.updateUser(id, user);
             if (!updatedUser) {
-                return "Usuer not updated"
+                return "Usuario no actualizado";
             }
-            return updatedUser
-        } catch (e) {
-            console.error("Error to update user: ", e)
-            return e;
-        }}
+            return updatedUser;
+        } catch (error) {
+            req.logger.error("Error al actualizar usuario: ", error);
+            return error;
+        }
+    }
 
     deleteUser = async (id) => {
         try {
-            const deletedUser = await this.userRepository.deleteUser(id)
+            const deletedUser = await this.userRepository.deleteUser(id);
             if (!deletedUser) {
-                return "User was not deleted"
+                return "Usuario no eliminado";
             }
-            return deletedUser
-        } catch (e) {
-            console.error("Users wasnt deleted: ", e)
-            return e
-        }}
+            return deletedUser;
+        } catch (error) {
+            req.logger.error("Error al eliminar usuario: ", error);
+            return error;
+        }
+    }
 
     validateUser = async (email, password) => {
         try {
-            const user = await this.userRepository.validateUser(email, password)
+            const user = await this.userRepository.validateUser(email, password);
             if (!user) {
-                return "User not validated"
+                return "Usuario no encontrado";
             }
             return user;
         }
-        catch (e) {
-            console.error("Error, User not validated: ", e)
-            return e
-        }}
+        catch (error) {
+            req.logger.error("Error al validar usuario: ", error);
+            return error;
+        }
+    }
 
     findUser = async (email) => {
         try {
-            const user = await this.userRepository.findUser(email)
+            const user = await this.userRepository.findUser(email);
             if (!user) {
-                return "User not found"
+                return "Usuario no encontrado";
             }
             return user;
-        } catch (e) {
-            console.error("Error User not found: ", e)
-            return e
-        }}
+        } catch (error) {
+            req.logger.error("Error al encontrar el usuario: ", error);
+            return error;
+        }
+    }
 
     findEmail = async (param) => {
         try {
-            const email = await this.userRepository.findEmail(param)
+            const email = await this.userRepository.findEmail(param);
             if (!email) {
-                return null
+                return null;
             }
 
             return email
-        } catch (e) {
-            console.error("Error finding email: ", e)
-            return e
-        }}
+        } catch (error) {
+            req.logger.error("Error finding email: ", error);
+            return error;
+        }
+    }
 
 }
 

@@ -5,9 +5,9 @@ class ProductService {
         this.productRepository = new ProductRepository()
     }
 
-    obtainProducts = async (limit) => {
+    obtainProducts = async (limit, page, sort, query) => {
         try {
-            const products = await this.productRepository.obtainProducts(limit)
+            const products = await this.productRepository.obtainProducts(limit, page, sort, query)
             return products;
         } catch (e) {
             console.error('Error to search products:', e)
@@ -53,40 +53,6 @@ class ProductService {
             return null
         }}
 
-    obtainProductByLimit = async (limit) => {
-        try {
-            const products = await this.productRepository.obtainProductByLimit(limit)
-            return products;
-        } catch (e) {
-            console.error('Error to obtain product by limit:', e)
-            return null;
-        }}
-
-    obtainProductByPage = async (page) => {
-        try {
-            const products = await this.productRepository.obtainProductByPage(page)
-            return products
-        } catch (e) {
-            console.error('Error to obtain product by page:', e)
-        }}
-
-    obtainProductByQuery = async (query) => {
-        try {
-            const products = await this.productRepository.obtainProductByQuery(query)
-            return products
-        } catch (e) {
-            console.error('Error to search product by query:', e)
-            return null
-        }}
-
-    obtainProductMain = async (page, limit, category, availability, sortOrder) => {
-        try {
-            const products = await this.productRepository.obtainProductMain(page, limit, category, availability, sortOrder)
-            return products
-        } catch (e) {
-            console.error('Error to search product by main:', e)
-            return null
-        }}
 }
 
 export default ProductService

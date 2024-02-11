@@ -1,4 +1,4 @@
-# App con carrito de compra 
+# terceraPreEntrega
 
 # Descripción
 Este proyecto está construido utilizando Node.js y Express, con Handlebars como motor de plantillas.
@@ -26,4 +26,4 @@ Se utiliza Passport.js para el manejo de la autenticación del usuario.
 * express-session: Middleware simple de sesión para Express.
 * dotenv: Carga variables de entorno desde un archivo .env.
 * passport: Autenticación simple y discreta para Node.js.
-* mongoose: Herramienta de modelado de objetos MongoDB diseñada para funcionar en un entorno asíncrono.# ProyectoFinalBackBeckett
+* mongoose: Herramienta de modelado de objetos MongoDB diseñada para funcionar en un entorno asíncrono.

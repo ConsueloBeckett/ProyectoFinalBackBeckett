@@ -3,9 +3,11 @@ export default class ProductDTO {
         this.name = product.name || "";
         this.description = product.description || "";
         this.price = product.price || 0;
-        this.category = product.category || "Others";
+        this.category = product.category || "Otros";
         this.stock = product.stock || 0;
         this.thumbnail = product.thumbnail || "";
+        this.owner = product.owner || "";
+        this._id = product._id.toString() || "";
 
     }
 }

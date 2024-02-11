@@ -1,9 +1,13 @@
+import errorTypes from "../errors/enum.js";
+import errorCauses from "../errors/info.js";
+
 export default class CustomError {
-    static createError({ name = "Error", cause, message, code = 4 }) {
-        const error = new Error(message)
-        error.name = name;
-        error.code = code;
-        error.cause = cause
-        throw error.name+'\n'+error.message+'\n'+error.code+'\n'+error.cause;
+    static createError({ statusCode = 500, causeKey, message }) {
+        const errorMessage = errorTypes[statusCode] || "Unknown Error"
+        const error = new Error(`${errorMessage}: ${message}`);
+        error.name = "CustomError";
+        error.statusCode = statusCode;
+        error.cause = errorCauses[causeKey] || "Unknown Cause";
+        throw error;
     }
 }

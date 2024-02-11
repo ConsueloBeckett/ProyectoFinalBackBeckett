@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main>
+  <h1>User List</h1>
+      {{#each users}}
+        <tr>
+          <td>{{name}}</td>
+          <td>{{email}}</td>
+          <td>{{role}}</td>
+          <td>{{last_connection}}</td>
+          <td>
+            <form action="/api/users/change-role/{{_id}}" method="POST">
+              <select name="newRole">
+                <option value="user" {{#if this.isUserRole}}selected{{/if}}>User</option>
+                <option value="admin" {{#if this.isAdminRole}}selected{{/if}}>Admin</option>
+                <option value="premium" {{#if this.isPremiumRole}}selected{{/if}}>Premium</option>
+              </select>
+              <button type="submit">Update</button>
+            </form>
+          </td>
+          <td>
+            <form action="/api/users/delete/{{_id}}" method="POST">
+              <button type="submit">Delete User</button>
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+
+</main>
+
+</body>
+</html>

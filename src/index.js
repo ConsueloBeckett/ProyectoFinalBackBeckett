@@ -1,11 +1,69 @@
-import { Carts, Products, Tickets, Users } from "../src/dao/factory.js";
+import express from "express";
+import { engine } from "express-handlebars"
+import * as path from "path"
+import __dirname from "./utils.js"
+import session from "express-session"
+import sessionConfig from "./config/session.config.js"
+import connectMongo from "./config/mongo.config.js"
+import dotenv from 'dotenv'
+import methodOverride from 'method-override';
+import passport from "passport"
+import specs from "./config/swagger.config.js";
+import initializePassport from "./config/passport.config.js"
+import swaggerUiExpress  from 'swagger-ui-express';
+import logHandler from './services/errors/logHandler.js'
+dotenv.config()
 
-import CartRepository from "../src/repositories/carts.repository.js";
-import ProductRepository from "../src/repositories/products.repository.js";
-import UserRepository from "../src/repositories/users.repository.js";
-import TicketRepository from "./repositories/tickets.repository.js";
+import viewsRouter from "./router/views.routes.js"
+import productsRouter from "./router/products.routes.js"
+import cartsRouter from "./router/carts.routes.js"
+import userRouter from "./router/user.routes.js"
 
-export const cartService = new CartRepository(new Carts())
-export const productService = new ProductRepository(new Products())
-export const userService = new UserRepository(new Users())
-export const ticketService = new TicketRepository(new Tickets())
+const app = express()
+const PORT = 8080
+
+connectMongo()
+
+app.use(session(sessionConfig))
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride(`_method`));
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
+
+app.use(logHandler)
+app.use((req, res, next) =>{
+    console.log(`${req.method} ${req.url}`)
+    next()
+})
+
+app.engine("handlebars", engine())
+app.set("view engine", "handlebars")
+app.set("views", path.resolve(__dirname + "/views"))
+
+app.use("/", express.static(__dirname + "/public"))
+
+
+app.use("/api/users", userRouter)
+app.use("/api/carts", cartsRouter)
+app.use("/api/products", productsRouter)
+
+app.use("/", viewsRouter)
+
+app.get('/logger', function (req, res) {
+    req.logger.error("Error message")
+     req.logger.warn("Warning message")
+     req.logger.info("Information message")
+     req.logger.http("http message")
+     req.logger.verbose("Verbose message")
+     req.logger.debug("Debug message")
+     req.logger.silly("Silly message") 
+     res.send('Hello World');
+});
+
+app.listen(PORT, () => console.log(`Listening to the port ${PORT}`))

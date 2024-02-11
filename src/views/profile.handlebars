@@ -10,71 +10,27 @@
 
 <body>
 
-    <div class="user-profile">
-        <h1>Profile of {{user.role}}</h1>
-        <h3><a href="/api/users/logout" id="logoutButton">Logout</a></h3>
-        <p>Email: {{user.email}}</p>
+  <main>
+  <div class="user-profile">
+    <h1>User Profile</h1>
+    <p>User Type: {{user.role}}</p>
+    <p>Email: {{user.email}}</p>
+    <p>ID: {{user.id}}</p>
+    <div class="button-container">
+      <a href="/api/users/premium/{{user.id}}" class="button">Upgrade to Premium</a>
+
+      {{#if isAuthorized}}
+        <a href="/addProducts" class="button">Create Product</a>
+        <a href="/api/products/manageProducts" class="button">Manage Products</a>
+       
+      {{/if}}
+      {{#if isAdmin}}
+        <a href="/api/users/allusers" class="button">All Users</a>
+      {{/if}}
     </div>
+  </div>
+</main>
 
-    <a href="/inicio">
-        <h2>Back to Home</h2>
-    </a>
-
-    <a href="/api/products">
-        <h2>Go to All Products</h2>
-    </a>
-
-    <div class="container">
-        <div class="infoProd">
-            <h1>Lista de Productos</h1>
-            <div class="detalleProd">
-                <div id="productsContainer">
-                    <ul>
-                        {{#each products}}
-                        <li>
-                            <strong>{{this.description}}</strong><br>
-                            Price: ${{this.price}}<br>
-                            Stock: {{this.stock}}<br>
-                            Category: {{this.category}}<br>
-                            <a href="/products/{{this._id}}?email={{../user.email}}">Ver Detalle</a>
-                        </li>
-                        {{/each}}
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="formulario">
-            <h1>Formulario Contactanos (CHAT)</h1>
-            <form id="email-form">
-                <input type="hidden" id="productId" name="productId">
-                <div class="inputs">
-                    <div>
-                        <input type="email" id="email" autocomplete="off" placeholder="Ingrese Correo" required>
-                    </div>
-                    <div>
-                        <textarea id="com" autocomplete="off" placeholder="Ingrese Comentario" required rows="4"
-                            cols="50"></textarea>
-                    </div>
-                </div>
-                <div class="botones">
-                    <button type="submit" id="btnCorreo">Enviar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/user.js"></script>
-    <script>
-        document.getElementById('logoutButton').addEventListener('click', cerrarSesion);
-
-        function cerrarSesion() {
-            localStorage.removeItem("token");
-            var userEmail = "{{user.email}}";
-            // Redirigir a la página de logout con el correo como parámetro
-            window.location.href = '/logout?email=' + userEmail;
-        }
-    </script>
 
 </body>
 

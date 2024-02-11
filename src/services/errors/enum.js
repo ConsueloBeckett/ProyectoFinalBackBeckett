@@ -1,7 +1,10 @@
-const EErrors = {
-    ROUTING_ERROR:1,
-    INVALID_TYPES_ERROR:2,
-    DATABASE_ERROR:3,
-    REQUIRED_DATA:4
+const errorTypes = {
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    404: 'Not Found',
+    409: 'Conflict',
+    500: 'Internal Server Error'
 }
-export default EErrors
+
+export default errorTypes;

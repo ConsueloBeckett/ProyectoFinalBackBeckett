@@ -1,13 +1,12 @@
-import ProductDTO from "../dao/DTOs/product.dto.js";
-import mongoose from "mongoose";
 import productModel from "../dao/model/product.model.js";
+import mongoose from "mongoose";
 
-export default class ProductRepository extends productModel {
+class ProductRepository extends productModel {
     constructor() {
-        super();
+        super()
     }
 
-    getProducts = async () => {
+    readProducts = async () => {
         try {
             const products = await productModel.find({});
             return products;
@@ -17,45 +16,81 @@ export default class ProductRepository extends productModel {
         }
     }
 
-    createProduct = async (product) => {
+    obtainProducts = async (limit, page, sort, query) => {
+        let newQuery = query || {};
+        let paginate = { limit, page, sort }
+
+        let products = await productModel.paginate(newQuery, paginate)
+        if (!products) {
+            return null;
+        }
+        return products;
+    }
+
+    addProduct = async (product) => {
         try {
             const newProduct = new productModel(product);
             await newProduct.save();
             return newProduct;
-        } catch (e) {
-            console.error('Error saving products:', e);
-            throw e;
+
+        } catch (error) {
+            console.error('Error in repository saving product:', error);
+            return null;
         }
     }
 
-    obtainProductById = async (productId) => {
+    obtainProductById =  async (productId) => {
         try {
             if (!mongoose.Types.ObjectId.isValid(productId)) {
-                return null;
+                return null; // Devuelve null si el ID no es válido
             }
             const product = await productModel.findById(productId);
             if (!product) {
                 return null;
             }
             return product;
-        } catch (e) {
-            console.error('Error finding product by ID:', e);
+        } catch (error) {
+            console.error('Error al buscar el producto por ID:', error);
             return null;
-        }
-    }
+        }}
 
-    // Add other methods with similar refactoring
-
-    existProduct = async (id) => {
+    updateProduct = async (id, product) => {
         try {
-            const product = await productModel.findById(id);
-            if (!product) {
+            const updatedProduct = await productModel.findOneAndUpdate({ _id: id }, product, { new: true });
+            if (updatedProduct) {
+                return { updatedProduct, message: "Producto actualizado" };
+            } else {
+                return "Producto no encontrado";
+            }
+
+        } catch (error) {
+            console.error('Error al actualizar el producto:', error);
+            return null;
+        }}
+
+    deleteProduct = async (productId) => {
+        try {
+            const deletedProduct = await productModel.findByIdAndDelete(productId);
+            return deletedProduct;
+        } catch (e) {
+            console.error('Error to delete the products', e)
+            return null;
+        }}
+
+
+        existProducts = async (id) => {
+            try {
+                const product = await productModel.findById(id);
+                if (!product) {
+                    return null;
+                }
+                return product;
+            } catch (e) {
+                console.error('Error checking if product exists:', e);
                 return null;
             }
-            return product;
-        } catch (e) {
-            console.error('Error checking if product exists:', e);
-            return null;
-        }
-    }
+ }
 }
+    
+
+export default ProductRepository

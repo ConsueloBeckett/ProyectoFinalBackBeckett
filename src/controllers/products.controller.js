@@ -1,157 +1,206 @@
-import ProductService from '../services/ProductService.js'
-const productService = new ProductService()
+import ProductService from '../services/ProductService.js';
+import ProductDTO from '../dao/DTOs/product.dto.js';
+import UserDTO from '../dao/DTOs/user.dto.js'
+import CustomError from '../services/errors/customError.js';
+import mailer from "../services/nodemailer.js";
 
-export async function obtainProducts(req, res) {
+const productService = new ProductService()
+const { sendMail } = mailer;
+
+
+export async function obtainProducts(req, res, next) {
     try {
         if (!req.session.email) {
             return res.redirect("/login")
 
         }
-        let limit = parseInt(req.query.limit) || 20
-        let allProducts = await productService.obtainProducts(limit)
-        allProducts = allProducts.map(product => product.toJSON())
-        
-        const userData = {
-            name: req.session.name,
-            surname: req.session.surname,
-            email: req.session.email,
-            role: req.session.role
+        let limit = parseInt(req.query.limit) || 100; 
+        let page = parseInt(req.query.page) || 1;
+        let sort = req.query.sort || "asc";
+        let query = req.query.query || {};
+        let allProducts = await productService.getProducts(limit, page, sort, query);
+
+        if (!allProducts) {
+            return next(
+                CustomError.createError({
+                    statusCode: 404,
+                    causeKey: "PRODUCTS_NOT_FOUND",
+                    message: "No products found"})
+            )
         }
 
+        allProducts = allProducts.docs.map(product => new ProductDTO(product))
+        req.logger.info("The user is:", req.session.user)        
+        let { name, email, role } = req.session.user
+        const userData = new UserDTO({ name, email, role })
+        req.logger.info("The userData is:", userData)
+
         res.render("home", {
-            title: "",
+            title: "Final Proyect",
             products: allProducts,
             user: userData
 
         })
-    } catch (e) {
-        console.error('Error to obtain the products:', e);
-        res.status(500).json({ error: 'Error to obtain the products' })
-    }}
+    } catch (error) {
+        req.logger.error('Error getting products:', error);
+        res.status(500).json({ error: 'Error getting products' });    }}
 
-export async function obtainProductById(req, res) {
+
+export async function obtainProductById(req, res, next) {
     try {
-        const prodId = req.params.pid
-        const prod = await productService.obtainProductById(prodId)
+        const prodId = req.body.prodId || req.params.pid;
+        const user = req.user;
+        const cartId = user.cart.cart._id;
+        console.log("The prodId is:", prodId)
+        console.log("The req.body is:", req.body)
+        console.log("The req.params is:", req.params)
+        console.log("The user is:", user)
+        console.log("The cartId is:", cartId)
+        const prod = await productService.getProductById(prodId);
 
         if (!prod) {
-            return res.status(404).json({ error: 'Product not found' })
+            return next(
+                CustomError.createError({
+                    statusCode: 404,
+                    causeKey: "PRODUCT_NOT_FOUND",
+                    message: "Product not found"                })
+            )
         }
-        const productDetail = prod.toObject()
+        const productDetail = prod.toObject();
         res.render("prod", {
-            title: "Product detail",
+            title: "Detail Product",
+            user,
             product: productDetail
         })
-    } catch (e) {
-        console.error('Error to obtain the product:', e)
-        res.status(500).json({ error: 'Error to obtain the product' })
-    }}
+    } catch (error) {
+        console.error('Error getting product:', error);
+        res.status(500).json({ error: 'Error getting product' });    }
+}
 
-export async function createProduct(req, res) {
+export async function createProduct(req, res, next) {
     try {
-        let { name, description, price, category, stock, thumbnail} = req.body;
-        console.error("El body es:", req.body)
+        if (req.user.role === 'premium' || req.user.role === 'admin') {
+            const productData = { ...req.body, owner: req.user._id };
+            req.logger.debug("The body is", req.body)
 
-        if (!name || !description || !price || !category || !stock || !thumbnail) {
-            return res.send({ status: "error", error: "Incomplete values" })
+            if (!productData.name || !productData.description || !productData.price || !productData.category || !productData.stock || !productData.thumbnail) {
+                return next(
+                    CustomError.createError({
+                        statusCode: 400, 
+                        causeKey: "PRODUCT_NOT_CREATED",
+                        message: "The product could not be created"                    })
+                );
+            }
+
+            let result = await productService.addProduct(productData);
+            res.send({ result: "success", payload: result });
         }
-        let result = await productService.addProduct({
-            name,
-            description,
-            price,
-            category,
-            stock,
-            thumbnail,
-           
-        })
+    } catch (error) {
+        req.logger.error('Error creating product:', error);
+        next(error);
+    }
+    
+}
+
+export async function updateProduct(req, res, next) {
+    try {
+        let { pid } = req.params;
+        console.log("the pid is:", pid)
+
+        let productToReplace = req.body;
+        console.log("the productToReplace is:", productToReplace)
+        if (!productToReplace.name || !productToReplace.description || !productToReplace.price || !productToReplace.category || !productToReplace.stock || !productToReplace.thumbnail) {
+            return next(
+                CustomError.createError({
+                    statusCode: 404,
+                    causeKey: "PRODUCT_NOT_UPDATED",
+                    message: "The product could not be updated"                })
+            )
+        }
+        let result = await productService.updateProduct(pid, productToReplace);
         res.send({ result: "success", payload: result })
     } catch (error) {
-        console.error('Error to create product:', error);
-        res.status(400).json({ error: 'Error to create product' })
-    }}
+        console.error('Error updating product:', error);
+        res.status(500).json({ error: 'Error updating product' });    }}
 
-export async function updateProduct(req, res) {
+export async function deleteProduct(req, res, next) {
+
     try {
-        let { pid } = req.params
-        let productToReplace = req.body
-        if (!productToReplace.name || !productToReplace.description || !productToReplace.price || !productToReplace.category || !productToReplace.stock || !productToReplace.thumbnail ) {
-            return res.send({ status: "error", error: "Incomplete values" })
+        let { pid } = req.params;
+        let user = req.user;
+
+        const product = await productService.getProductById(pid);
+        if (!product) {
+            return res.status(404).send("Product not found");
+                }
+        let owner = product.owner;
+        let ownerEmail = owner.email;
+        let userId = user._id.toString();
+
+        if (owner !== userId && user.role !== "admin") {
+            return res.status(403).send("Unauthorized access. This product does not belong to you.");        
         }
-        let result = await productService.updateProduct(pid, productToReplace)
+    
+        let result = await productService.deleteProduct(pid);
+        const mailOptions = {
+            from: "email@admin",
+            to: [ownerEmail, "mconsuelobeckett@gmail.com"],
+            subject: "Product removed",
+            text: `Product ${product.name} has been deleted`
+                }
+        sendMail(mailOptions);
+        if (!result) {
+            return next(
+                CustomError.createError({
+                    statusCode: 404,
+                    causeKey: "PRODUCT_NOT_DELETED",
+                    message: "The product could not be deleted"                })
+            )
+        }
         res.send({ result: "success", payload: result })
-    } catch (e) {
-        console.error('Error to update product:', e)
-        res.status(400).json({ error: 'Error to update product' })
-    }}
+    } catch (error) {
+        console.error('Error deleting product:', error)
+        res.status(500).json({ error: 'Error deleting product' });    }}
 
-export async function deleteProduct(req, res) {
-    try {
-        let { pid } = req.params
-        let result = await productService.deleteProduct(pid)
-        res.send({ result: "success", payload: result })
-    } catch (e) {
-        console.error('Error to eliminate product:', e)
-        res.status(500).json({ error: 'Error to eliminate product' })
-    }}
 
-export async function obtainProductByLimit(req, res) {
-    try {
-        let limit = parseInt(req.params.limit)
-        if (isNaN(limit) || limit <= 0) {
-            limit = 10
-        } res.send(await productService.obtainProductByLimit(limit))
-    } catch (e) {
-        console.error('Error to obtain products by limit:', e)
-        res.status(500).json({ error: 'Error to obtain products by limit' })
-    }}
 
-export async function obtainProductByPage(req, res) {
+export async function obtainProductMain(req, res, next) {
     try {
-        let page = parseInt(req.params.page)
-        if (isNaN(page) || page <= 0) {
-            page = 1
-        }
-        const productsPerPage = 1
-        res.send(await productService.obtainProductByPage(page, productsPerPage))
-    } catch (e) {
-        console.error('Error to obtain products by page:', e)
-        res.status(500).json({ error: 'Error to obtain products by page' })
-    }}
+        let limit = parseInt(req.query.limit) || 100; 
+        let page = parseInt(req.query.page) || 1;
+        let sort = req.query.sort || "asc";
+        let query = req.query.query || {};
+        let allProducts = await productService.getProducts(limit, page, sort, query)
 
-export async function obtainProductByQuery(req, res) {
-    try {
-        let query = req.params.query
-        res.send(await productService.obtainProductByQuery(query))
-    } catch (e) {
-        console.error('Error to obtain products by query:', e)
-        res.status(500).json({ error: 'Error to obtain products by query' })
-    }}
+        if (!allProducts) {
+            return next(
+                CustomError.createError({
+                    statusCode: 404,
+                    causeKey: "PRODUCTS_NOT_FOUND",
+                    message: "No products found"                })
+            )
+        }
+        let isAdmin;
+        let isAuthorized;
+        let user = req.user;
+        if (!user) {
+            return res.redirect("/login")
+        }
+        if (user.role === "admin") {
+            isAdmin = true;
+        }
+        if (user.role === "admin" || user.role === "premium") {
+            isAuthorized = true;
+        }
 
-export async function obtainProductMain(req, res) {
-    try {
-        let page = parseInt(req.params.page)
-        let limit = parseInt(req.params.limit)
-        let category = req.params.category
-        let availability = req.params.availability
-        let sortOrder = req.params.sortOrder
-        if (isNaN(page) || page <= 0) {
-            page = 1
-        }
-        if (isNaN(limit) || limit <= 0) {
-            limit = 10
-        }
-        if (!category) {
-            category = ''
-        }
-        if (!availability) {
-            availability = ''
-        }
-        if (!sortOrder) {
-            sortOrder = ''
-        }
-        res.send(await productService.obtainProductMain(page, limit, category, availability, sortOrder))
-    } catch (e) {
-        console.error('Error to obtain products by query:', e);
-        res.status(500).json({ error: 'Error to obtain products by query' })
-    }}
+        allProducts = allProducts.docs.map(product => new ProductDTO(product))
+        res.render("manageProducts", {
+            title: "Manage Products",
+            products: allProducts,
+            isAdmin,
+            isAuthorized
+        })
+    } catch (error) {
+        console.error('Error getting products:', error);
+        res.status(500).json({ error: 'Error getting products' });    }}
 

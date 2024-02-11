@@ -1,75 +1,93 @@
-import UserDTO from "../dao/DTOs/user.dto.js";
+import userModel from "../dao/model/user.model.js"
 
-class UserRepository {
-    constructor(userModel) {
-        this.userModel = userModel;
+class UserRepository extends userModel {
+    constructor() {
+        super()
     }
 
-    getUsers = async () => {
+    findUser = async (email) => {
         try {
-            const users = await this.userModel.find();
-            return users;
-        } catch (error) {
-            console.error("Error obtaining users: ", error);
-            return error;
-        }
-    }
-
-    createUser = async (user) => {
-        try {
-            const userToInsert = new UserDTO(user);
-            const newUser = await this.userModel.create(userToInsert);
-            return newUser;
-        } catch (error) {
-            console.error("Error adding user: ", error);
-            return error;
-        }
-    }
-
-    getRolUser = async (email) => {
-        try {
-            const user = await this.userModel.findOne({ email }, { email: 1, password: 1, role: 1, name: 1, surname: 1 });
+            const user = await userModel.findOne({ email }, { email: 1, password: 1, role: 1, name: 1, surname: 1 })
             if (!user) {
-                return "User not found";
+                return "User not found"
             }
             return user;
-        } catch (error) {
-            console.error("Error finding user: ", error);
-            return error;
-        }
-    }
+        } catch (e) {
+            req.logger.error("Error finding user: ", e)
+            return e
+        }}
 
-    updUserRol = async ({ uid, rol }) => {
+    addUser = async (user) => {
         try {
-            console.log(uid);
-            console.log(rol);
-            const result = await this.userModel.updateUserRoleById({ uid, rol });
-            return result;
-        } catch (error) {
-            console.error("Error updating user role: ", error);
-            return error;
-        }
-    }
+            const newUser = await userModel.create(user)
+            return newUser
+        } catch (e) {
+            req.logger.error("Error to addd user: ")
+            return e
+        }}
 
-    findEmail = async (param) => {
-        try {
-            const email = await this.userModel.findOne(param);
-            return email;
-        } catch (error) {
-            console.error("Error finding email: ", error);
-            return error;
-        }
-    }
+  obtainUsersById = async () => {
+    try {
+        const users = await userModel.findById(id)
+        return users
+    } catch (e) {
+        req.logger.error("Error obtaining users hy id: ", e)
+        return e
+    }}
 
-    obtainUserByEmail = async (email) => {
-        try {
-            const user = await this.userModel.findOne({ email });
-            return user;
-        } catch (error) {
-            console.error("Error obtaining user by email: ", error);
-            return error;
-        }
+obtainUserByEmail = async (param) => {
+    try {
+        const email = await userModel.findOne({ email: email });
+        return email
+    } catch (e) {
+        req.logger.error("Error obtaining user by email: ", e)
+        return e
     }
+}
+
+updateUser = async (id, user) => {
+    try {
+        const updatedUser = await userModel.findByIdAndUpdate(id, user);
+        return updatedUser;
+    } catch (error) {
+        req.logger.error("Error al actualizar usuario: ");
+        return error;
+    }
+}
+
+deleteUser = async (id) => {
+    try {
+        const deletedUser = await userModel.findByIdAndDelete(id);
+        return deletedUser;
+    } catch (error) {
+        req.logger.error("Error al eliminar usuario: ");
+        return error;
+    }
+}
+
+validateUser = async (email, password) => {
+    try {
+        const user = await userModel.findOne({ email: email, password: password });
+        return user;
+    }
+    catch (error) {
+        req.logger.error("Error al validar usuario: ");
+        return error;
+    }
+}
+
+
+
+findEmail = async (param) => {
+    try {
+        const email = await userModel.findOne(param);
+        return email;
+    } catch (error) {
+        req.logger.error("Error finding email: ", error);
+        return error;
+    }
+}
+
 }
 
 export default UserRepository;

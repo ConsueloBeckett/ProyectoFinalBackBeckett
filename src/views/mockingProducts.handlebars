@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+</head>
+<body>
+    {{#each products}}
+  <div class="product-container">
+    <h2>{{this.name}}</h2>
+    <p>ID: {{this._id}}</p>
+    <p>Description: {{this.description}}</p>
+    <p>Price: ${{this.price}}</p>
+    <p>Category: {{this.category}}</p>
+    <p>Stock: {{this.stock}}</p>
+    <img src="{{this.thumbnail}}" alt="Product Image" />
+    <a href="/api/products/{{this._id}}" class="button"><h3>View Product</h3></a>
+  </div>
+{{/each}}
+
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+
+</body>
+</html>
