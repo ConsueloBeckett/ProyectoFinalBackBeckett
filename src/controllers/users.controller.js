@@ -4,6 +4,7 @@ import { hashPass, validPass } from "../utils.js";
 import mailer from "../services/nodemailer.js";
 import jwt from "jsonwebtoken";
 import initiateResetToken from "../services/token.js";
+import CustomError from "../services/errors/customError.js";
 
 const { sendMail } = mailer;
 const userService = new UserService();
@@ -52,11 +53,10 @@ export async function loginUser(req, res) {
 
 export async function logoutUser(req, res) {
     try {
-        console.log("Enter logoutUser")
+        
         let user = req.session.user
         user.last_connection = new Date();
         await userService.updateUser(user._id, user);
-        console.log("User logged out:", user.name + " last connection: " + user.last_connection);
         req.session.destroy()
         res.redirect("/login")
     } catch (error) {
@@ -162,15 +162,13 @@ export async function changeRole(req, res) {
         const documents = user.documents;
         const documentAmount = documents.length;
         const role = user.role;
-        if (role === "user" && quantityDocuments >= 3) {
+        if (role === "user" && documentAmount >= 3) {
             updatedUser = { role: "premium" };
             req.session.user.role = "premium";
-            console.log("The user updated in session is ", req.session.user.role);
         }
         else {
             updatedUser = { role: "user" };
             req.session.user.role = "user";
-            console.log("The user updated in session is ", req.session.user.role);
 
         }
         await userService.updateUser(uid, updatedUser);
@@ -184,9 +182,7 @@ export async function uploadDocuments(req, res) {
     if (!req.files) {
         return res.status(400).send({ status: "error", message: "No file uploaded" });
     }
-    console.log("The files are ", req.files);
     let user = req.session.user;
-    console.log("The user is ", user);
     user.documents = req.files;
     await userService.updateUser(user._id, user);
     res.send({ status: "success", message: "Files uploaded successfully" });
@@ -216,7 +212,6 @@ export async function requestAllUsers(req, res) {
 export async function deleteOldUsers(req, res) {
     try {
         const users = await userService.getUsers();
-        console.log("Enter deleteOldUsers");
         if (!users) {
             return res.status(404).json("No users found");
         }
@@ -235,13 +230,12 @@ export async function deleteOldUsers(req, res) {
             let email = user.email;
             await userService.deleteUser(id);
             const emailOptions = {
-                from: "email@admin",
+                from: "email@admin.cl",
                 to: email,
                 subject: "Account deleted",
                 html: `<p>Dear user, your account has been deleted due to inactivity</p>`
             };
             await sendMail(emailOptions);
-            console.log("The user with email ", email, " has been deleted");
         });
         const ids = oldUsers.map(user => user._id);
         await userService.deleteUser(ids);

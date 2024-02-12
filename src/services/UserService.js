@@ -9,11 +9,11 @@ class UserService {
         try {
             const newUser = await this.userRepository.addUser(user);
             if (!newUser) {
-                return "Usuario no agregado";
+                return "User not added";
             }
             return newUser;
         } catch (error) {
-            req.logger.error("Error al agregar usuario: ", error);
+            console.log("Error to add to the userService: ", error);
             return error;
         }
     }
@@ -22,11 +22,11 @@ class UserService {
         try {
             const users = await this.userRepository.getUsers();
             if (!users) {
-                return "No hay usuarios";
+                return "there are not any users";
             }
             return users;
         } catch (error) {
-            req.logger.error("Error al obtener usuarios: ", error);
+            req.logger.error("Error to obtain users: ", error);
             return error;
         }
     }
@@ -35,11 +35,11 @@ class UserService {
         try {
             const user = await this.userRepository.getUserById(id);
             if (!user) {
-                return "Usuario no encontrado";
+                return "User not found";
             }
             return user;
         } catch (error) {
-            req.logger.error("Error al obtener usuario por id: ", error);
+            req.logger.error("Error to obtain by id: ", error);
             return error;
         }
     }
@@ -48,11 +48,11 @@ class UserService {
         try {
             const user = await this.userRepository.getUserByEmail(email);
             if (!user) {
-                return "Usuario no encontrado";
+                return "User not found";
             }
             return user;
         } catch (error) {
-            req.logger.error("Error al obtener usuario por email: ", error);
+            req.logger.error("Error to obtain by id email: ", error);
         }
     }
 
@@ -60,11 +60,11 @@ class UserService {
         try {
             const updatedUser = await this.userRepository.updateUser(id, user);
             if (!updatedUser) {
-                return "Usuario no actualizado";
+                return "User not updated";
             }
             return updatedUser;
         } catch (error) {
-            req.logger.error("Error al actualizar usuario: ", error);
+            req.logger.error("Error to update the user: ", error);
             return error;
         }
     }
@@ -73,11 +73,11 @@ class UserService {
         try {
             const deletedUser = await this.userRepository.deleteUser(id);
             if (!deletedUser) {
-                return "Usuario no eliminado";
+                return "User not deleted";
             }
             return deletedUser;
         } catch (error) {
-            req.logger.error("Error al eliminar usuario: ", error);
+            req.logger.error("Error to deleted the user: ", error);
             return error;
         }
     }
@@ -86,12 +86,12 @@ class UserService {
         try {
             const user = await this.userRepository.validateUser(email, password);
             if (!user) {
-                return "Usuario no encontrado";
+                return "User not found";
             }
             return user;
         }
         catch (error) {
-            req.logger.error("Error al validar usuario: ", error);
+            req.logger.error("Error to validatet the user: ", error);
             return error;
         }
     }
@@ -100,11 +100,11 @@ class UserService {
         try {
             const user = await this.userRepository.findUser(email);
             if (!user) {
-                return "Usuario no encontrado";
+                return "User not found";
             }
             return user;
         } catch (error) {
-            req.logger.error("Error al encontrar el usuario: ", error);
+            req.logger.error("Error to find the user: ", error);
             return error;
         }
     }

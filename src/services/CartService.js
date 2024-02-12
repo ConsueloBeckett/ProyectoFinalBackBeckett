@@ -78,15 +78,19 @@ class CartService {
 
     updateQuantity = async (idCart, idProd, quantity) => {
         try {
-            const updateQuantity = await this.cartRepository.updateQuantity(idCart, idProd, quantity)
+            const prevProduct = await this.cartRepository.existProductInCart(idCart, idProd);
+            let prevQuantity = prevProduct.quantity;
+            let newQuantity = prevQuantity + quantity;
+            const updateQuantity = await this.cartRepository.updateQuantityOfProduct(idCart, idProd, newQuantity);
             if (!updateQuantity) {
-                return null
+                return null;
             }
-            return updateQuantity
-        } catch (e) {
-            console.error('Error:', e)
-            return null
-        }}
+            return updateQuantity;
+        } catch (error) {
+            console.error('Error:', error);
+            return null;
+        }
+        }
 
     deleteProductCart = async (idCart, idProd) => {
         try {

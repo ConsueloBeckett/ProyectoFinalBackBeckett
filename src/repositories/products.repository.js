@@ -42,7 +42,7 @@ class ProductRepository extends productModel {
     obtainProductById =  async (productId) => {
         try {
             if (!mongoose.Types.ObjectId.isValid(productId)) {
-                return null; // Devuelve null si el ID no es válido
+                return null;
             }
             const product = await productModel.findById(productId);
             if (!product) {
@@ -50,7 +50,7 @@ class ProductRepository extends productModel {
             }
             return product;
         } catch (error) {
-            console.error('Error al buscar el producto por ID:', error);
+            console.error('Error to find products by ID:', error);
             return null;
         }}
 
@@ -58,13 +58,13 @@ class ProductRepository extends productModel {
         try {
             const updatedProduct = await productModel.findOneAndUpdate({ _id: id }, product, { new: true });
             if (updatedProduct) {
-                return { updatedProduct, message: "Producto actualizado" };
+                return { updatedProduct, message: "Producto updated" };
             } else {
-                return "Producto no encontrado";
+                return "Product not found";
             }
 
         } catch (error) {
-            console.error('Error al actualizar el producto:', error);
+            console.error('Error to updated the products:', error);
             return null;
         }}
 

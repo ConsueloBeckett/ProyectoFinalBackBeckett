@@ -43,13 +43,13 @@ class CartRepository extends cartModel {
 
 
 
-    addProductCart = async (idCart, idProd) => {
+    addProductCart = async (idCart, idProd, quantity) => {
         try {
             const filter = { _id: idCart }
 
             const update = {
                 $setOnInsert: { _id: idCart },
-                $push: { products: [{ productId: idProd, quantity: 1 }] },
+                $push: { products: [{ productId: idProd, quantity }] },
             }
 
             const options = { upsert: true, new: true }
@@ -72,14 +72,11 @@ class CartRepository extends cartModel {
             if (!cart) {
                 return "Cart not found"
             }
-            const product = await productModel.findById(idProd)
-            if (!product) {
-                return "Product not found"
-            }
+            const getProductsInCart = cart.products
 
-            const IsProduct = Array.isArray(cart.products) && cart.products.some((product) => product.productId === idProd)
+            const IsProduct =getProductsInCart.find((products) => product.productId.toString() === idProd.toString());
             if (IsProduct) {
-                return product
+                return IsProduct
             } else {
                 return null
             }
@@ -174,6 +171,7 @@ class CartRepository extends cartModel {
     purchaseCart = async (idCart) => {
         try {
             const cart = await cartModel.findById(idCart);
+
             const products = cart.products;
             const productsNotAvailable = [];
             const productsAvailable = [];
@@ -184,7 +182,7 @@ class CartRepository extends cartModel {
 
                 if (!productToBuy || productToBuy.stock < product.quantity) {
                     productsNotAvailable.push(productToBuy);
-                    console.error("Not enough stock for product: ", productToBuy);
+                    console.log("Not enough stock for product: ", productToBuy);
                 } else {
                     productsAvailable.push(productToBuy.name);
                     productToBuy.stock = productToBuy.stock - product.quantity;
@@ -194,7 +192,7 @@ class CartRepository extends cartModel {
             }
 
             if (!cart) {
-                return null;
+                return "cart not found";
             }
 
             const ticket = new ticketModel({
@@ -205,10 +203,11 @@ class CartRepository extends cartModel {
             });
             await ticket.save();
             cart.products = productsNotAvailable;
+            await cart.save()
 
             return { ticket: ticket, cart: cart };
         } catch (error) {
-            console.error('Error purchasing cart:', error);
+            console.error('Error:', error);
             return null;
         }
     }

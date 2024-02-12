@@ -1,4 +1,5 @@
 import userModel from "../dao/model/user.model.js"
+import cartModel from "../dao/model/cart.model.js"
 
 class UserRepository extends userModel {
     constructor() {
@@ -13,18 +14,31 @@ class UserRepository extends userModel {
             }
             return user;
         } catch (e) {
-            req.logger.error("Error finding user: ", e)
+            console.log("Error finding user: ", e)
             return e
         }}
 
     addUser = async (user) => {
         try {
             const newUser = await userModel.create(user)
-            return newUser
+            const newCart = await cartModel.create({ userId: newUser._id, products: [] });
+            newUser.cart = newCart._id;
+            await newUser.save();
+            return newUser;
         } catch (e) {
-            req.logger.error("Error to addd user: ")
+            console.log("Error to addd user: ")
             return e
         }}
+
+        obtainUsers = async () => {
+            try {
+                const users = await userModel.find();
+                return users;
+            } catch (error) {
+                req.logger.error("Error to obtain the user: ");
+                return error;
+            }
+        }
 
   obtainUsersById = async () => {
     try {
@@ -50,7 +64,7 @@ updateUser = async (id, user) => {
         const updatedUser = await userModel.findByIdAndUpdate(id, user);
         return updatedUser;
     } catch (error) {
-        req.logger.error("Error al actualizar usuario: ");
+        req.logger.error("Error to upddate the user: ");
         return error;
     }
 }

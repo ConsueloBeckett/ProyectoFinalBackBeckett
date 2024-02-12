@@ -31,7 +31,7 @@ const initializePassport = () => {
     }))
 
     passport.serializeUser((user, done) => {
-        done(null, user._id);
+        done(null, user);
     })
     passport.deserializeUser(async (id, done) => {
         try {
@@ -58,7 +58,7 @@ const initializePassport = () => {
             }
             user.last_connection = new Date();
             await userService.updateUser(user._id, user);
-            console.log("Login successful. Authenticated user");
+            logger.log("Login successful. Authenticated user");
             return done(null, user);
         } catch (error) {
             console.error("Error in login strategy:", error);
