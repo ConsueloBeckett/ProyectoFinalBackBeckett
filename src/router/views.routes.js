@@ -2,51 +2,92 @@ import express from "express";
 import authorizedRole from "../config/auth.config.js";
 import { createFakeProducts } from "../config/faker.config.js"
 
-const viewsRouter = express.Router()
+const ViewsRouter = express.Router()
 
 
-viewsRouter.get("/inicio", async (req, res) => {
+ViewsRouter.get("/inicio", async (req, res) => {
+    const cartId = req.session.cartId
+    const user = req.session.user || null
     res.render("inicio", {
-        title: "Shopping app",
+        title: "Shopping App",
+        cartId: cartId,
+        user: user
     })
 })
-viewsRouter.get("/register", (req, res) => {
+
+ViewsRouter.get("/register", (req, res) => {
+    const cartId = req.session.cartId || null
+    const user = req.session.user || null
     res.render("register", {
-        title: "Register User"
+        title: "Register User",
+        cartId: cartId,
+        user: user
     })
 })
 
-viewsRouter.get("/login", (req, res) => {
+ViewsRouter.get("/login", (req, res) => {
+    const cartId = req.session.cartId
+    const user = req.session.user || null
     res.render("login", {
-        title: "Login User"
+        title: "Login of user",
+        cartId: cartId,
+        user: user
     })
 })
 
-viewsRouter.get("/addProducts", authorizedRole(["admin", "premium"]), (req, res) => {
+ViewsRouter.get("/reset", (req, res) => {
+    const cartId = req.session.cartId
+    const user = req.session.user || null
+    res.render("reset", {
+        title: "Reset Password",
+        cartId: cartId,
+        user: user
+    })
+})
+
+ViewsRouter.get("/addProducts", authorizedRole(["admin", "premium"]), (req, res) => {
+    const cartId = req.session.cartId
+    const user = req.session.user || null
+
     res.render("addProducts", {
-        title: "AddProducts"
+        title: "Add Products",
+        cartId: cartId,
+        user: user
     })
 })
 
-viewsRouter.get("/mockingProducts", async (req, res) => {
-    let products =  createFakeProducts()
+ViewsRouter.get("/mockingProducts", async (req, res) => {
+    let products = await createFakeProducts()
+    const cartId = req.session.cartId
+    const user = req.session.user || null
     res.render("mockingProducts", {
         title: "Add products",
-        products: products
+        products: products,
+        cartId: cartId,
+        user: user
     })
 })
 
-viewsRouter.get("/confirmedProducts", (req, res) => {
+ViewsRouter.get("/confirmedProducts", (req, res) => {
+    const cartId = req.session.cartId
+    const user = req.session.user || null
     res.render("confirmedProducts", {
-        title: "Productos Confirmados",
-        products: products
+        title: "Products confirmed",
+        products: products,
+        cartId: cartId,
+        user: user
     })
 })
 
-viewsRouter.get("/documents", (req, res) => {
+ViewsRouter.get("/documents", (req, res) => {
+    const cartId = req.session.cartId
+    const user = req.session.user || null
+
     res.render("upload", {
         title: "Upload Documents",
+        cartId: cartId,
+        user: user
     })
 })
 
-export default viewsRouter
+export default ViewsRouter

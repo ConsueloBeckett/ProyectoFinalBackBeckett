@@ -17,11 +17,16 @@
         <p>Price: {{product.price}}</p>
         <p>Category: {{product.category}}</p>
         <p>Stock: {{product.stock}}</p>
-        <img src="{{product.thumbnail}}" alt="Product Image" />
+        <img src={{product.thumbnail}} alt="" />
 
         {{#if user}}
-            <button data-product-id="{{product._id}}">Add to Cart</button>
-        {{/if}}
+<div class="botonesCantidad">
+          <button id="disminuyeCantidad" class="boton">-</button>
+          <p id="cantidad">0</p>
+          <button id="incrementoCantidad" class="boton">+</button>
+        </div>
+        <button id="addToCart" class="boton">Add to cart</button>
+        <button id="removeFromCart" class="boton">Delete from cart</button>        {{/if}}
     </div>
 
 </body>

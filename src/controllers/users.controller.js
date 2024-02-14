@@ -79,7 +79,7 @@ export async function handleGitHubCallback(req, res) {
 export async function requestPasswordReset(req, res) {
     try {
         const { email } = req.body;
-        const user = await userService.getUserByEmail(email);
+        const user = await userService.obteinUserByEmail(email);
         if (!user) {
             return res.status(404).json("The user does not exist");
         }
@@ -125,14 +125,14 @@ export async function resetPassword(req, res) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const email = decoded.email;
-        const user = await userService.getUserByEmail(email);
+        const user = await userService.obteinUserByEmail(email);
         const id = user.id;
 
         if (!user) {
             return res.status(404).json("The user does not exist");
         }
 
-        if (await validPass(password, user.password)) {
+        if (await contrastPassword(password, user.password)) {
             return res.status(400).json("The password cannot be the same as the previous one");
         }
         const hashedPassword = await hashPass(password);
@@ -153,7 +153,7 @@ export async function changeRole(req, res) {
         if (!uid) {
             return res.status(400).json("User ID is required");
         }
-        const user = await userService.getUserById(uid);
+        const user = await userService.obteinUserById(uid);
         if (!user) {
             return res.status(404).json("The user does not exist");
         }
@@ -161,8 +161,12 @@ export async function changeRole(req, res) {
         let updatedUser;
         const documents = user.documents;
         const documentAmount = documents.length;
+
+        if (quantityDocuments < 3) {
+            return res.redirect("/documents");
+        }
         const role = user.role;
-        if (role === "user" && documentAmount >= 3) {
+        if (role === "user" && quantityDocuments >= 3) {
             updatedUser = { role: "premium" };
             req.session.user.role = "premium";
         }
@@ -177,6 +181,7 @@ export async function changeRole(req, res) {
         return res.status(500).json(error.message);
     }
 }
+
 
 export async function uploadDocuments(req, res) {
     if (!req.files) {
@@ -193,7 +198,7 @@ export async function requestAllUsers(req, res) {
         return res.status(403).json("You do not have permissions to perform this action");
     }
     try {
-        let users = await userService.getUsers();
+        let users = await userService.obteinUsers();
         if (!users) {
             return res.status(404).json("No users found");
         }
@@ -209,9 +214,9 @@ export async function requestAllUsers(req, res) {
     }
 }
 
-export async function deleteOldUsers(req, res) {
+export async function discardOldUsers(req, res) {
     try {
-        const users = await userService.getUsers();
+        const users = await userService.obteinUsers();
         if (!users) {
             return res.status(404).json("No users found");
         }

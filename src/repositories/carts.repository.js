@@ -8,7 +8,7 @@ class CartRepository extends cartModel {
         super()
     }
 
-    readCarts = async () => {
+    scanCarts = async () => {
         try {
             const carts = await cartModel.find({})
             return carts
@@ -17,7 +17,7 @@ class CartRepository extends cartModel {
             return null;
         }}
 
-    getCartById = async (cartId) => {
+    obteinCartById = async (cartId) => {
         try {
             const cart = await cartModel.findById(cartId).populate('products.productId');
             if (!cart) {
@@ -161,45 +161,48 @@ class CartRepository extends cartModel {
             return null;
         }}
 
-    obteinCart = async (limit) => {
+    obteinCarts = async (limit) => {
         let cartsOld = await this.readProducts()
         if (!limit) return cartsOld
         if (cartsOld.length === 0) return "Error obtaining carts:"
         if (cartsOld && limit) return cartsOld.slice(0, limit)
         }
 
-    purchaseCart = async (idCart) => {
+    purchaseCart = async (idCart, deliveryData) => {
         try {
             const cart = await cartModel.findById(idCart);
 
-            const products = cart.products;
+            if (!cart) {
+                return "Cart not found";
+            }
             const productsNotAvailable = [];
             const productsAvailable = [];
             let amount = 0;
 
-            for (const product of products) {
-                const productToBuy = await productModel.findById(product.productId);
-
-                if (!productToBuy || productToBuy.stock < product.quantity) {
-                    productsNotAvailable.push(productToBuy);
-                    console.log("Not enough stock for product: ", productToBuy);
+            for (const cartProduct of cart.products) {
+                const productToBuy = await productModel.findById(cartProduct.productId);
+                if (!productToBuy || productToBuy.stock < cartProduct.quantity) {
+                    productsNotAvailable.push(cartProduct);
                 } else {
-                    productsAvailable.push(productToBuy.name);
-                    productToBuy.stock = productToBuy.stock - product.quantity;
-                    amount = amount + productToBuy.price * product.quantity;
+                    productsAvailable.push({
+                        productId: productToBuy._id,
+                        quantity: cartProduct.quantity,
+                        name: productToBuy.name
+                    });
+                    productToBuy.stock -= cartProduct.quantity;
                     await productToBuy.save();
+                    amount += productToBuy.price * cartProduct.quantity;
                 }
-            }
-
-            if (!cart) {
-                return "cart not found";
-            }
+            };
 
             const ticket = new ticketModel({
                 code: uuidv4(),
                 amount: amount,
                 purchaser: cart.name,
                 products: productsAvailable,
+                products: productsAvailable,
+                deliveryAddress: deliveryData.deliveryAddress,
+                contactPhone: deliveryData.contactPhone
             });
             await ticket.save();
             cart.products = productsNotAvailable;

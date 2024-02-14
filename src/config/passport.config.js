@@ -17,7 +17,6 @@ const initializePassport = () => {
             let user = await userService.findEmail({ email: username });
     
             if (user) {
-                console.log("User already exists");
                 return done(null, false, { message: "User already exists" });
             }
             const hashedPassword = await hashPass(password);
@@ -35,7 +34,7 @@ const initializePassport = () => {
     })
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await userService.getUserById(id);
+            const user = await userService.obteinUserById(id);
             return done(null, user);
         } catch (error) {
             return done(error);
@@ -77,8 +76,7 @@ const initializePassport = () => {
             let name = profile.displayName;
 
             if (email && email.length > 0) {
-                let user = await userService.findEmail({ email: email });
-                console.log(`User en passport.use /github: ${user}`);
+                let user = await userService.findEmail({ email: email });               
 
                 if (!user) {
 
@@ -88,8 +86,6 @@ const initializePassport = () => {
                         password: "",
                         role: "admin"
                     }
-                    let newUserJson = JSON.stringify(newUser);
-
                     let result = await userService.addUser(newUser);
                     return done(null, result);
                 } else {

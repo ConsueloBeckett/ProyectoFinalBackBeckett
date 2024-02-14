@@ -10,18 +10,26 @@
 
 <body>
 
-    {{#if cart.length}}
-        <section>
-            <h2>Shopping Cart</h2>
-            {{#each cart}}
-                <p>Product ID: {{this.productId}} - Quantity: {{this.quantity}} Units</p>
-            {{/each}}
-        </section>
+    {{#if cart}}
+    <section>
+        <h2>Shopping Cart</h2>
+        {{#each products}}
+        <p>Product ID: {{this.productId}} - Quantity: {{this.quantity}} Units</p>
+        <p>{{this.price}} CLP </p>
+        <p>{{this.total}} CLP </p>
+        {{/each}}
+    </section>
     {{else}}
-        <p>The cart is empty.</p>
+    <p>The cart is empty.</p>
     {{/if}}
+    <form method="post" action="/api/carts/{{cartId}}/purchase">
+        <label for="deliveryAddress">Delivery Address</label>
+        <input type="deliveryAddress" name="deliveryAddress" required />
+        <label for="contactPhone">Phone</label>
+        <input type="contactPhone" name="contactPhone" required />
+        <button type="submit" class="button">Complete Purchase</button>
+    </form>
 
-    
 
 </body>
 

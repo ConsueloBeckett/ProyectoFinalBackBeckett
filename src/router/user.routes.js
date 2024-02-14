@@ -1,6 +1,6 @@
 import express from "express"
 import passport from "passport"
-import { registerUser, loginUser, logoutUser, handleGitHubCallback, requestAllUsers, requestPasswordReset,renderPas, resetPassword, changeRole, deleteOldUsers, uploadDocuments } from "../controllers/users.controller.js"
+import { registerUser, loginUser, logoutUser, handleGitHubCallback, requestAllUsers, requestPasswordReset,renderPas, resetPassword, changeRole, discardOldUsers, uploadDocuments } from "../controllers/users.controller.js"
 import UserDTO from "../dao/DTOs/user.dto.js"
 import uploadAgent from "../services/multer.js"
 
@@ -48,9 +48,6 @@ userRouter.get("/profile", async (req, res) => {
         }
         let isAdmin = false;
         let isAuthorized = false;
-        console.log("El isAdmin es: ", isAdmin)
-        console.log("El isAuthorized es: ", isAuthorized)
-        console.log("El role es: ", user.role)
 
         if (user.role === "admin") {
             isAdmin = true;
@@ -60,14 +57,12 @@ userRouter.get("/profile", async (req, res) => {
             isAuthorized = true;
         }
 
-        console.log("Admin is: ", isAdmin)
-       console.log("Authorized is: ", isAuthorized)
-
        return res.render("profile", {
             title: "User profile",
             user: userData,
             isAdmin: isAdmin,
-            isAuthorized: isAuthorized
+            isAuthorized: isAuthorized,
+            cartId: cartId
         })
     }
     catch (e) {
@@ -102,23 +97,23 @@ userRouter.get("/current", async (req, res) => {
         })
     }
     catch (e) {
-        req.logger.error("Error at the rute /profile:", e)
+        req.logger.error("Error at the rute /current", e)
         res.status(500).json(e)
     }
 })
 
-userRouter.get("/allUsers", requestAllUsers)//yes
+userRouter.get("/allUsers", requestAllUsers)
 
-userRouter.post("/request-password", requestPasswordReset)//yes
+userRouter.post("/request-password", requestPasswordReset)
 
-userRouter.get("/createPass/:token", renderPas)//yes
+userRouter.get("/createPass/:token", renderPas)
 
-userRouter.post("/createPass/:token", resetPassword)//yes
+userRouter.post("/createPass/:token", resetPassword)
 
-userRouter.get("/premium/:uid", changeRole)//yes
+userRouter.get("/premium/:uid", changeRole)
 
 userRouter.post("/:uid/documents", uploadAgent.array("documents"), uploadDocuments)
 
-userRouter.post("/deleteOldUsers", deleteOldUsers)
+userRouter.post("/discardOldUsers", discardOldUsers)
 
 export default userRouter

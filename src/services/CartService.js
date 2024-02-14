@@ -6,9 +6,9 @@ class CartService {
         this.cartRepository = new CartRepository()
     }
 
-    readCarts = async () => {
+    scanCarts = async () => {
         try {
-            const carts = await this.cartRepository.readCarts()
+            const carts = await this.cartRepository.scanCarts()
             return carts
         } catch (e) {
             console.error('Error to search the carts:', e)
@@ -25,9 +25,9 @@ class CartService {
             return null
         }}
 
-    getCartById = async (cartId) => {
+    obteinCartById = async (cartId) => {
         try {
-            const cart = await this.cartRepository.getCartById(cartId)
+            const cart = await this.cartRepository.obteinCartById(cartId)
 
             if (!cart) {
                 return null
@@ -51,13 +51,13 @@ class CartService {
             return null;
         }}
 
-    IsProductCart = async (idCart, idProd) => {
+    existProductCart = async (idCart, idProd) => {
         try {
-            const IsProductCart = await this.cartRepository.IsProductCart(idCart, idProd)
-            if (!IsProductCart) {
+            const existProductCart = await this.cartRepository.existProductCart(idCart, idProd)
+            if (!existProductCart) {
                 return null
             }
-            return IsProductCart
+            return existProductCart
         } catch (error) {
             console.error('Error:', error)
             return null
@@ -76,16 +76,16 @@ class CartService {
         }
     }
 
-    updateQuantity = async (idCart, idProd, quantity) => {
+    updateQuantityProduct = async (idCart, idProd, quantity) => {
         try {
             const prevProduct = await this.cartRepository.existProductInCart(idCart, idProd);
             let prevQuantity = prevProduct.quantity;
             let newQuantity = prevQuantity + quantity;
-            const updateQuantity = await this.cartRepository.updateQuantityOfProduct(idCart, idProd, newQuantity);
-            if (!updateQuantity) {
+            const updateQuantityProduct = await this.cartRepository.updateQuantityProductOfProduct(idCart, idProd, newQuantity);
+            if (!updateQuantityProduct) {
                 return null;
             }
-            return updateQuantity;
+            return updateQuantityProduct;
         } catch (error) {
             console.error('Error:', error);
             return null;

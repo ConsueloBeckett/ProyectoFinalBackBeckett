@@ -18,9 +18,9 @@ class UserService {
         }
     }
 
-    getUsers = async () => {
+    obteinUsers = async () => {
         try {
-            const users = await this.userRepository.getUsers();
+            const users = await this.userRepository.obteinUsers();
             if (!users) {
                 return "there are not any users";
             }
@@ -31,9 +31,9 @@ class UserService {
         }
     }
 
-    getUserById = async (id) => {
+    obteinUserById = async (id) => {
         try {
-            const user = await this.userRepository.getUserById(id);
+            const user = await this.userRepository.obteinUserById(id);
             if (!user) {
                 return "User not found";
             }
@@ -44,9 +44,9 @@ class UserService {
         }
     }
 
-    getUserByEmail = async (email) => {
+    obteinUserByEmail = async (email) => {
         try {
-            const user = await this.userRepository.getUserByEmail(email);
+            const user = await this.userRepository.obteinUserByEmail(email);
             if (!user) {
                 return "User not found";
             }

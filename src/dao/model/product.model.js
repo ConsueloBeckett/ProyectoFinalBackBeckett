@@ -1,12 +1,11 @@
 import mongoose from "mongoose"
-const productCollection = "products"
 import mongoosePaginate from "mongoose-paginate-v2";
 import { v4 as uuidv4 } from 'uuid';
 
-
+const productCollection = "products"
 
 const productSchema = new mongoose.Schema({
-    nname: { type: String, required: true, max: 100 },
+    name: { type: String, required: true, max: 100 },
     description: { type: String, required: true, max: 100 },
     price: { type: Number, required: true },
     code: { type: String, required: false, default: () => uuidv4() },

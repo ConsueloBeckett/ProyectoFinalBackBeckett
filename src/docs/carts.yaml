@@ -1,106 +1,270 @@
 paths:
-  /carts:
+  /api/carts/:
     get:
-      summary: Get all carts
+      summary: All carts were successfully obtained
       tags:
-        - carts
+        - Carts
       responses:
         "200":
-          description: "Data retrieved successfully"
+          description: Todos los Carts se obtuvieron correctamente
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: './terceraPreEntrega/src/docs/carts-schema.yaml'
+                $ref: "#/components/schemas/Carts"
         "500":
-          description: "Internal server error"
+          description: Internal server error
     post:
-      summary: Add a cart
+      summary: Create a new carts
       tags:
-        - carts
+        - Carts
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                products:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      productId:
-                        type: string
-                        description: Product ID
-                      quantity:
-                        type: integer
-                        description: Quantity of the product in the cart
-                  description: Array of products in the cart
-              required:
-                - products
-      responses:
-        "200":
-          description: "Cart created successfully"
-        "500":
-          description: "Internal server error"
-  /carts/{cid}/purchase:
-    post:
-      summary: Make a purchase of a cart
+              $ref: "#/components/schemas/Cart"
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un carrito por su id
       tags:
-        - carts
+        - Carts
       parameters:
-        - in: path
-          name: cid
+        - name: cid
+          in: path
+          description: Id del carrito
           required: true
           schema:
             type: string
-          description: ID of the cart to purchase
+      responses:
+        "200":
+          description: El carrito se obtuvo correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: El carrito no existe
+        "500":
+    put:
+      summary: Actualiza un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                products:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      description:
-                        type: string
-                        description: Product description
-                      image:
-                        type: string
-                        description: URL of the product image
-                      price:
-                        type: number
-                        description: Product price
-                      stock:
-                        type: integer
-                        description: Available stock of the product
-                      category:
-                        type: string
-                        description: Product category
-                      availability:
-                        type: string
-                        enum: ['in_stock', 'out_of_stock']
-                        description: Product availability
-                  description: Array of products to purchase
-                email:
-                  type: string
-                  description: Buyer's email
-              required:
-                - products
-                - email
+              $ref: "#/components/schemas/Cart"
       responses:
         "200":
-          description: "Purchase made successfully. A ticket has been created."
-        "300":
-          description: "Not enough stock to complete the purchase"
-        "401":
-          description: "Cart with the provided ID not found"
+          description: El carrito se actualizó correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: El carrito no existe
         "500":
-          description: "Internal error processing the purchase"
+    delete:
+      summary: Elimina un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: El carrito se eliminó correctamente
+        "404":
+          description: El carrito no existe
+        "500":
+  /api/carts/{cid}/products/{pid}:
+    get:
+      summary: Obtiene un producto de un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Id del producto
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: El producto se obtuvo correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: El producto no existe
+        "500":
+          description: Error interno del servidor
+    post:
+      summary: Agrega un producto a un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Id del producto
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: El producto se agregó correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: El producto no existe
+        "500":
+          description: Error interno del servidor
+    put:
+      summary: Actualiza un producto de un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Id del producto
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: El producto se actualizó correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: El producto no existe
+        "500":
+          description: Error interno del servidor
+    delete:
+      summary: Elimina un producto de un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Id del producto
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: El producto se eliminó correctamente
+        "404":
+          description: El producto no existe
+        "500":
+          description: Error interno del servidor
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Realiza la compra de un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: La compra se realizó correctamente
+        "404":
+          description: El carrito no existe
+        "500":
+          description: Error interno del servidor
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Id del carrito
+        name:
+          type: string
+          description: Nombre del carrito
+        description:
+          type: string
+          description: Descripción del carrito
+        products:
+          type: array
+          description: Productos del carrito
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+                format: uuid
+                description: Id del producto
+              quantity:
+                type: number
+                description: Cantidad del producto
+      $ref: "#/components/schemas/Product"
+      example:
+        _id: 5f9d5b9b9d9b9d9b9d9b9d9b
+        name: Cart A
+        description: Cart shop A
+        products:
+          - productId: 5f9d5b9b9d9b9d9b9d9b9d9b
+            quantity: 1
+          - productId: 5f9d5b9b9d9b9d9b9d9b9d9b
+            quantity: 2
+
+    Carts:
+      type: array
+      description: List of carts
+      items:
+        $ref: "#/components/schemas/Cart"
