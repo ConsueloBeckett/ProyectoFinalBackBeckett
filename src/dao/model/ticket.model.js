@@ -3,6 +3,7 @@ const ticketCollection = "tickets"
 
 const productSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'products' }, 
+    quantity: { type: Number, required: true },
     name: { type: String, required: true }
 });
 

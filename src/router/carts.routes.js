@@ -1,19 +1,19 @@
 import express from "express"
-import { addProductCart, obteinCart, deleteCart, deleteProductCart, obteinCarts, obtainProductsCart, updateCart, updateQuantityProduct, purchaseCart, buildCart } 
+import { addProductCart, obtainCart, deleteCart, deleteProductCart, obtainCarts, obtainProductsCart, updateCart, updateQuantityProduct, purchaseCart, buildCart } 
         from "../controllers/carts.controller.js"
 
-const cartRouter = express.Router()
+const CartRouter = express.Router()
 
-cartRouter.get("/", obteinCarts)
-cartRouter.get(":cid", obteinCart)
-cartRouter.post("/",  buildCart)
-cartRouter.put("/:cid", updateCart)
-cartRouter.delete("/:cid", deleteCart)
+CartRouter.get("/", obtainCarts)
+CartRouter.get(":cid", obtainCart)
+CartRouter.post("/",  buildCart)
+CartRouter.put("/:cid", updateCart)
+CartRouter.delete("/:cid", deleteCart)
 
-cartRouter.get("/:cid/products/:pid", obtainProductsCart)
-cartRouter.post("/:cid/products/:pid", addProductCart)
-cartRouter.put("/:cid/products/:pid", updateQuantityProduct)
-cartRouter.delete("/:cid/products/:pid", deleteProductCart)
-cartRouter.post("/:cid/purchase", purchaseCart)
+CartRouter.get("/:cid/products/:pid", obtainProductsCart)
+CartRouter.post("/:cid/products/:pid", addProductCart)
+CartRouter.put("/:cid/products/:pid", updateQuantityProduct)
+CartRouter.delete("/:cid/products/:pid", deleteProductCart)
+CartRouter.post("/:cid/purchase", purchaseCart)
 
-export default cartRouter
+export default CartRouter

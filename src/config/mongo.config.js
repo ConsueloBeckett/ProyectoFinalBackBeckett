@@ -1,8 +1,8 @@
 import mongoose from "mongoose"
 import dotenv from "dotenv"
-dotenv.config()
+dotenv.config() 
 
-mongoose.set('strictQuery', false) 
+mongoose.set('strictQuery', false)  
 
 const connectMongo = async () => {
     try {

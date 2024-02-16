@@ -7,7 +7,7 @@ const cartService = new CartService()
 const productService = new ProductService()
 const { sendMail } = mailer
 
-export async function obteinCarts(req, res, next) {
+export async function obtainCarts(req, res, next) {
     try {
         let carts = await cartService.scanCarts();
 
@@ -28,18 +28,18 @@ export async function obteinCarts(req, res, next) {
     }
 }
 
-export async function obteinCart(req, res, next) {
+export async function obtainCart(req, res, next) {
     const cartId = req.params.cid
     const user = req.user
 
     try {
-        const cart = await cartService.obteinCartById(cartId)
-        const products = await cartService.existProductCart(cartId)
+        const cart = await cartService.obtainCartById(cartId)
+        const products = await cartService.existProductInCart(cartId)
         if (!cart) {
             return res.direct("/api/users/login")
         }
         const formattedProducts = await Promise.all(products.map(async (product) => {
-            const productData = await productService.getProductById(product.productId);
+            const productData = await productService.obtainProductById(product.productId);
             return {
                 id: product.productId,
                 quantity: product.quantity,
@@ -129,7 +129,7 @@ export async function obtainProductsCart(req, res, next) {
     const productId = req.params.pid;
 
     try {
-        const result = await cartService.IsProductCart(cartId, productId);
+        const result = await cartService.existProductInCart(cartId, productId);
         if (!result) {
             return next(
                 CustomError.createError({
@@ -167,7 +167,7 @@ export async function addProductCart(req, res, next) {
             res.send("This product belongs to you, you cannot add it to your cart.");
             return
         }
-        const IsProductCart = await cartService.IsProductCart(cartId, productId)
+        const IsProductCart = await cartService.existProductInCart(cartId, productId)
         let result
         if (IsProductCart) {
             result = await cartService.updateQuantityProduct(cartId, productId)

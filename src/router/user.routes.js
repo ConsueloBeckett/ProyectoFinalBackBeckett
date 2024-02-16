@@ -5,41 +5,42 @@ import UserDTO from "../dao/DTOs/user.dto.js"
 import uploadAgent from "../services/multer.js"
 
 
-const userRouter = express.Router()
+const UserRouter = express.Router()
 
-userRouter.post("/register",
+UserRouter.post("/register",
     passport.authenticate("register",
         { failureRedirect: "api/users/failregister" }), registerUser
 )
 
-userRouter.get("/failregister", async (req, res) => {
+UserRouter.get("/failregister", async (req, res) => {
     req.logger.error("Failed Strategy")
     res.send({ error: "Failed" })
 })
 
-userRouter.post("/login",
+UserRouter.post("/login",
     passport.authenticate("login",
         { failureRedirect: "/fail login" }), loginUser
 )
 
-userRouter.get("/faillogin", async (req, res) => {
+UserRouter.get("/faillogin", async (req, res) => {
     res.send({ error: "Failed Login" })
 })
 
-userRouter.get("/logout", logoutUser)
+UserRouter.get("/logout", logoutUser)
 
-userRouter.get("/github", passport.authenticate("github", { scope: ["user: email"] }), async (req, res) => {
+UserRouter.get("/github", passport.authenticate("github", { scope: ["user: email"] }), async (req, res) => {
     req.logger.error("Redirecting to GitHub for authentication")
 })
 
-userRouter.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }), handleGitHubCallback)
+UserRouter.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }), handleGitHubCallback)
 
-userRouter.get("/profile", async (req, res) => {
+UserRouter.get("/profile", async (req, res) => {
     try {
         let user = req.session.user
+        let cartId = req.session.cartId;
 
         if (!user || !user.email) {
-            res.redirect("/login")
+            return res.redirect("/login")
         }
         const userData = {
             email: user.email,
@@ -71,9 +72,11 @@ userRouter.get("/profile", async (req, res) => {
     }
 })
 
-userRouter.get("/current", async (req, res) => {
+UserRouter.get("/current", async (req, res) => {
     try {
         let user = req.session.user
+        let cartId = req.session.cartId;
+
 
         if (!user || user == null || user == undefined) {
             req.logger.error("No se encontró el usuario")
@@ -93,7 +96,8 @@ userRouter.get("/current", async (req, res) => {
 
          return res.render("current", {
             title: "Profile user",
-            user: userSafe
+            user: userSafe,
+            cartId: cartId
         })
     }
     catch (e) {
@@ -102,18 +106,18 @@ userRouter.get("/current", async (req, res) => {
     }
 })
 
-userRouter.get("/allUsers", requestAllUsers)
+UserRouter.get("/allUsers", requestAllUsers)
 
-userRouter.post("/request-password", requestPasswordReset)
+UserRouter.post("/request-password", requestPasswordReset)
 
-userRouter.get("/createPass/:token", renderPas)
+UserRouter.get("/createPass/:token", renderPas)
 
-userRouter.post("/createPass/:token", resetPassword)
+UserRouter.post("/createPass/:token", resetPassword)
 
-userRouter.get("/premium/:uid", changeRole)
+UserRouter.get("/premium/:uid", changeRole)
 
-userRouter.post("/:uid/documents", uploadAgent.array("documents"), uploadDocuments)
+UserRouter.post("/:uid/documents", uploadAgent.array("documents"), uploadDocuments)
 
-userRouter.post("/discardOldUsers", discardOldUsers)
+UserRouter.post("/discardOldUsers", discardOldUsers)
 
-export default userRouter
+export default UserRouter

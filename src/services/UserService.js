@@ -13,46 +13,46 @@ class UserService {
             }
             return newUser;
         } catch (error) {
-            console.log("Error to add to the userService: ", error);
+            console.error("Error to add to the userService: ", error);
             return error;
         }
     }
 
-    obteinUsers = async () => {
+    obtainUsers = async () => {
         try {
-            const users = await this.userRepository.obteinUsers();
+            const users = await this.userRepository.obtainUsers();
             if (!users) {
                 return "there are not any users";
             }
             return users;
         } catch (error) {
-            req.logger.error("Error to obtain users: ", error);
+            console.error("Error to obtain users: ", error);
             return error;
         }
     }
 
-    obteinUserById = async (id) => {
+    obtainUserById = async (id) => {
         try {
-            const user = await this.userRepository.obteinUserById(id);
+            const user = await this.userRepository.obtainUsersById(id);
             if (!user) {
                 return "User not found";
             }
             return user;
         } catch (error) {
-            req.logger.error("Error to obtain by id: ", error);
+            console.error("Error to obtain by id: ", error);
             return error;
         }
     }
 
-    obteinUserByEmail = async (email) => {
+    obtainUserByEmail = async (email) => {
         try {
-            const user = await this.userRepository.obteinUserByEmail(email);
+            const user = await this.userRepository.obtainUserByEmail(email);
             if (!user) {
                 return "User not found";
             }
             return user;
         } catch (error) {
-            req.logger.error("Error to obtain by id email: ", error);
+            console.error("Error to obtain by id email: ", error);
         }
     }
 
@@ -64,61 +64,61 @@ class UserService {
             }
             return updatedUser;
         } catch (error) {
-            req.logger.error("Error to update the user: ", error);
+            console.error("Error to update the user: ", error);
             return error;
         }
     }
 
-    deleteUser = async (id) => {
+    discardUser = async (id) => {
         try {
-            const deletedUser = await this.userRepository.deleteUser(id);
-            if (!deletedUser) {
+            const discardedUser = await this.userRepository.discardUser(id);
+            if (!discardedUser) {
                 return "User not deleted";
             }
-            return deletedUser;
+            return discardedUser;
         } catch (error) {
-            req.logger.error("Error to deleted the user: ", error);
+            console.error("Error to deleted the user: ", error);
             return error;
         }
     }
 
-    validateUser = async (email, password) => {
+    approveUser = async (email, password) => {
         try {
-            const user = await this.userRepository.validateUser(email, password);
+            const user = await this.userRepository.approveUser(email, password);
             if (!user) {
                 return "User not found";
             }
             return user;
         }
         catch (error) {
-            req.logger.error("Error to validatet the user: ", error);
+            console.error("Error to validatet the user: ", error);
             return error;
         }
     }
 
-    findUser = async (email) => {
+    assetUser = async (email) => {
         try {
-            const user = await this.userRepository.findUser(email);
+            const user = await this.userRepository.assetUser(email);
             if (!user) {
                 return "User not found";
             }
             return user;
         } catch (error) {
-            req.logger.error("Error to find the user: ", error);
+            console.error("Error to find the user: ", error);
             return error;
         }
     }
 
-    findEmail = async (param) => {
+    assetEmail = async (param) => {
         try {
-            const email = await this.userRepository.findEmail(param);
+            const email = await this.userRepository.assetEmail(param);
             if (!email) {
                 return null;
             }
 
             return email
         } catch (error) {
-            req.logger.error("Error finding email: ", error);
+            console.error("Error finding email: ", error);
             return error;
         }
     }

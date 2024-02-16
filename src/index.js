@@ -14,13 +14,13 @@ import swaggerUiExpress  from 'swagger-ui-express';
 import logHandler from './services/errors/logHandler.js'
 dotenv.config()
 
-import viewsRouter from "./router/views.routes.js"
-import productsRouter from "./router/products.routes.js"
-import cartsRouter from "./router/carts.routes.js"
-import userRouter from "./router/user.routes.js"
+import ViewsRouter from "./router/views.routes.js"
+import ProductsRouter from "./router/products.routes.js"
+import CartsRouter from "./router/carts.routes.js"
+import UserRouter from "./router/user.routes.js"
 
 const app = express()
-const PORT = 8080
+const PORT = process.env.PORT || 8080
 
 connectMongo()
 
@@ -40,10 +40,6 @@ app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 //logger
 app.use(logHandler)
-app.use((req, res, next) =>{
-    console.log(`${req.method} ${req.url}`)
-    next()
-})
 
 //habdlebars
 app.engine("handlebars", engine())
@@ -54,18 +50,18 @@ app.set("views", path.resolve(__dirname + "/views"))
 app.use("/", express.static(__dirname + "/public"))
 
 //rutas vistas
-app.use("/", viewsRouter)
-//app.use("/api/products/css", express.static(__dirname + "/public/css"))
-//app.use("/api/products/img", express.static(__dirname + "/public/img"))
+app.use("/", ViewsRouter)
+app.use("/api/products/css", express.static(__dirname + "/public/css"))
+app.use("/api/products/img", express.static(__dirname + "/public/img"))
 
 //crud
-app.use("/api/users", userRouter)
-app.use("/api/carts", cartsRouter)
-app.use("/api/products", productsRouter)
+app.use("/api/users", UserRouter)
+app.use("/api/carts", CartsRouter)
+app.use("/api/products", ProductsRouter)
 
 
 
-app.get('/logger', function (req, res) {
+app.get('/loggerPrueba', function (req, res) {
     req.logger.error("Error message")
      req.logger.warn("Warning message")
      req.logger.info("Information message")

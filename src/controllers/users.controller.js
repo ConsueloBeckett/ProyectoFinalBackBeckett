@@ -79,7 +79,7 @@ export async function handleGitHubCallback(req, res) {
 export async function requestPasswordReset(req, res) {
     try {
         const { email } = req.body;
-        const user = await userService.obteinUserByEmail(email);
+        const user = await userService.obtainUserByEmail(email);
         if (!user) {
             return res.status(404).json("The user does not exist");
         }
@@ -125,7 +125,7 @@ export async function resetPassword(req, res) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const email = decoded.email;
-        const user = await userService.obteinUserByEmail(email);
+        const user = await userService.obtainUserByEmail(email);
         const id = user.id;
 
         if (!user) {
@@ -153,7 +153,7 @@ export async function changeRole(req, res) {
         if (!uid) {
             return res.status(400).json("User ID is required");
         }
-        const user = await userService.obteinUserById(uid);
+        const user = await userService.obtainUserById(uid);
         if (!user) {
             return res.status(404).json("The user does not exist");
         }
@@ -198,7 +198,7 @@ export async function requestAllUsers(req, res) {
         return res.status(403).json("You do not have permissions to perform this action");
     }
     try {
-        let users = await userService.obteinUsers();
+        let users = await userService.obtainUsers();
         if (!users) {
             return res.status(404).json("No users found");
         }
@@ -216,7 +216,7 @@ export async function requestAllUsers(req, res) {
 
 export async function discardOldUsers(req, res) {
     try {
-        const users = await userService.obteinUsers();
+        const users = await userService.obtainUsers();
         if (!users) {
             return res.status(404).json("No users found");
         }
@@ -233,7 +233,7 @@ export async function discardOldUsers(req, res) {
         oldUsers.forEach(async user => {
             let id = user._id;
             let email = user.email;
-            await userService.deleteUser(id);
+            await userService.discardUser(id);
             const emailOptions = {
                 from: "email@admin.cl",
                 to: email,
@@ -243,7 +243,7 @@ export async function discardOldUsers(req, res) {
             await sendMail(emailOptions);
         });
         const ids = oldUsers.map(user => user._id);
-        await userService.deleteUser(ids);
+        await userService.discardUser(ids);
 
         return res.status(200).json("Users successfully deleted");
     } catch (error) {

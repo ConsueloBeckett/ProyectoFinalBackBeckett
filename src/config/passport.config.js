@@ -4,6 +4,7 @@ import UserService from "../services/UserService.js";
 import { hashPass, validPass } from "../utils.js";
 import GitHubStrategy from "passport-github2";
 
+
 const LocalStrategy = local.Strategy;
 
 const userService = new UserService();
@@ -14,7 +15,7 @@ const initializePassport = () => {
 
         try {
             const { name, surname, email, role } = req.body;
-            let user = await userService.findEmail({ email: username });
+            let user = await userService.assetEmail({ email: username });
     
             if (user) {
                 return done(null, false, { message: "User already exists" });
@@ -30,11 +31,11 @@ const initializePassport = () => {
     }))
 
     passport.serializeUser((user, done) => {
-        done(null, user);
+        done(null, user._id);
     })
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await userService.obteinUserById(id);
+            const user = await userService.obtainUserById(id);
             return done(null, user);
         } catch (error) {
             return done(error);
@@ -43,7 +44,7 @@ const initializePassport = () => {
 
     passport.use("login", new LocalStrategy({ usernameField: "email" }, async (username, password, done) => {
         try {
-            const user = await userService.findEmail({ email: username });
+            const user = await userService.assetEmail({ email: username });
            logger.log("User found:", user);
 
             if (!user) {
@@ -76,7 +77,7 @@ const initializePassport = () => {
             let name = profile.displayName;
 
             if (email && email.length > 0) {
-                let user = await userService.findEmail({ email: email });               
+                let user = await userService.assetEmail({ email: email });               
 
                 if (!user) {
 

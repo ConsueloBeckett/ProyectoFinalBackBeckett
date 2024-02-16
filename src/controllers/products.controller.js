@@ -103,7 +103,6 @@ export async function obtainProductById(req, res, next) {
             cartId: cartId
         })
     } catch (error) {
-        console.error('Error getting product:', error);
         res.status(500).json({ error: 'Error getting product' });    }
 }
 
@@ -169,7 +168,8 @@ export async function updateProduct(req, res, next) {
 
 export async function deleteProduct(req, res, next) {
 
-    try {let { pid } = req.params;
+    try {
+        let { pid } = req.params;
     let user = req.user;
 
     const product = await productService.getProductById(pid);
@@ -187,7 +187,7 @@ export async function deleteProduct(req, res, next) {
     let result = await productService.deleteProduct(pid);
     const mailOptions = {
         from: "email@admin.cl",
-        to: [ownerEmail, "consuelo.beckett@gmail.com"],
+        to: [ownerEmail, "mconsuelobeckett@gmail.com"],
         subject: "Product removed",
         text: `Product ${product.name} has been deleted`
     }

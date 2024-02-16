@@ -1,7 +1,7 @@
 const authorizedRoles = (allowedRoles) => {
     return (req, res, next) => {
         const currentUser = req.user
-        if (!currentUser || currentUser.allowedRoles !== allowedRoles) {
+        if (!currentUser || !allowedRoles.includes(currentUser.role)) {
             return res.status(403).send("Access not authorized")
         }
         next()

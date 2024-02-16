@@ -6,7 +6,7 @@ class ProductRepository extends productModel {
         super()
     }
 
-    readProducts = async () => {
+    scanProducts = async () => {
         try {
             const products = await productModel.find({});
             return products;

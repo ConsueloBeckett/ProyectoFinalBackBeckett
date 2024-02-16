@@ -2,14 +2,14 @@ import express from "express"
 import { obtainProducts, createProduct, deleteProduct, obtainProductById, updateProduct, obtainProductMain } 
         from "../controllers/products.controller.js"
 
-const productsRouter = express.Router()
+const ProductsRouter = express.Router()
 
-productsRouter.get("/manageProducts", obtainProductMain)
-productsRouter.get("/", obtainProducts)
-productsRouter.get("/:pid", obtainProductById)
-productsRouter.post("/", createProduct)
-productsRouter.put("/update/:pid", updateProduct)
-productsRouter.delete("/delete/:pid", deleteProduct)
+ProductsRouter.get("/obtainProductMain", obtainProductMain)
+ProductsRouter.get("/", obtainProducts)
+ProductsRouter.get("/:pid", obtainProductById)
+ProductsRouter.post("/", createProduct)
+ProductsRouter.put("/update/:pid", updateProduct)
+ProductsRouter.delete("/delete/:pid", deleteProduct)
 
 
-export default productsRouter
+export default ProductsRouter

@@ -6,7 +6,7 @@ class UserRepository extends userModel {
         super()
     }
 
-    findUser = async (email) => {
+    assetUser = async (email) => {
         try {
             const user = await userModel.findOne({ email }, { email: 1, password: 1, role: 1, name: 1, surname: 1 })
             if (!user) {
@@ -40,7 +40,7 @@ class UserRepository extends userModel {
             }
         }
 
-  obtainUsersById = async () => {
+  obtainUsersById = async (id) => {
     try {
         const users = await userModel.findById(id)
         return users
@@ -69,10 +69,10 @@ updateUser = async (id, user) => {
     }
 }
 
-deleteUser = async (id) => {
+discardUser = async (id) => {
     try {
-        const deletedUser = await userModel.findByIdAndDelete(id);
-        return deletedUser;
+        const discardedUser = await userModel.findByIdAndDelete(id);
+        return discardedUser;
     } catch (error) {
         req.logger.error("Error al eliminar usuario: ");
         return error;
@@ -92,7 +92,7 @@ validateUser = async (email, password) => {
 
 
 
-findEmail = async (param) => {
+assetEmail = async (param) => {
     try {
         const email = await userModel.findOne(param);
         return email;

@@ -17,7 +17,19 @@ class CartRepository extends cartModel {
             return null;
         }}
 
-    obteinCartById = async (cartId) => {
+        addCart = async (cart) => {
+            try {
+                const newCart = new cartModel(cart);
+                await newCart.save();
+                return newCart;  
+    
+            } catch (e) {
+                console.error('Error to save the cart:', e);
+                return null;
+            }}
+
+
+    obtainCartById = async (cartId) => {
         try {
             const cart = await cartModel.findById(cartId).populate('products.productId');
             if (!cart) {
@@ -28,19 +40,6 @@ class CartRepository extends cartModel {
             console.error('Error to find the cart by ID:', e);
             return null;
         }}
-
-
-    addCart = async (cart) => {
-        try {
-            const newCart = new cartModel(cart);
-            await newCart.save();
-            return newCart;
-
-        } catch (e) {
-            console.error('Error to save the cart:', e);
-            return null;
-        }}
-
 
 
     addProductCart = async (idCart, idProd, quantity) => {
@@ -74,7 +73,7 @@ class CartRepository extends cartModel {
             }
             const getProductsInCart = cart.products
 
-            const IsProduct =getProductsInCart.find((products) => product.productId.toString() === idProd.toString());
+            const IsProduct =getProductsInCart.find((product) => product.productId.toString() === idProd.toString());
             if (IsProduct) {
                 return IsProduct
             } else {
@@ -99,7 +98,7 @@ class CartRepository extends cartModel {
         }}
 
 
-    updateQuantity = async (idCart, idProd, quantity) => {
+    updateQuantityProduct = async (idCart, idProd, quantity) => {
         try {
             const cart = await cartModel.findById(idCart)
             if (!cart) {
@@ -161,7 +160,7 @@ class CartRepository extends cartModel {
             return null;
         }}
 
-    obteinCarts = async (limit) => {
+    obtainCarts = async (limit) => {
         let cartsOld = await this.readProducts()
         if (!limit) return cartsOld
         if (cartsOld.length === 0) return "Error obtaining carts:"

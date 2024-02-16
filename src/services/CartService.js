@@ -25,9 +25,9 @@ class CartService {
             return null
         }}
 
-    obteinCartById = async (cartId) => {
+    obtainCartById = async (cartId) => {
         try {
-            const cart = await this.cartRepository.obteinCartById(cartId)
+            const cart = await this.cartRepository.obtainCartById(cartId)
 
             if (!cart) {
                 return null
@@ -39,9 +39,9 @@ class CartService {
         }}
 
   
-    addProductCart = async (idCart, idProd) => {
+    addProductCart = async (idCart, idProd, quantity) => {
         try {
-            const newProduct = await this.cartRepository.addProductCart(idCart, idProd)
+            const newProduct = await this.cartRepository.addProductCart(idCart, idProd, quantity)
             if (!newProduct) {
                 return null
             }
@@ -51,7 +51,7 @@ class CartService {
             return null;
         }}
 
-    existProductCart = async (idCart, idProd) => {
+    existProductInCart = async (idCart, idProd) => {
         try {
             const existProductCart = await this.cartRepository.existProductCart(idCart, idProd)
             if (!existProductCart) {
@@ -104,9 +104,9 @@ class CartService {
             return null
         }}
 
-    purchaseCart = async (idCart) => {
+    purchaseCart = async (idCart, deliveryData) => {
         try {
-            const purchase = await this.cartRepository.purchaseCart(idCart)
+            const purchase = await this.cartRepository.purchaseCart(idCart, deliveryData)
             if (!purchase) {
                 return null
             }
