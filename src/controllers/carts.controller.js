@@ -170,7 +170,7 @@ export async function addProductCart(req, res, next) {
         const IsProductCart = await cartService.existProductInCart(cartId, productId)
         let result
         if (IsProductCart) {
-            result = await cartService.updateQuantityProduct(cartId, productId)
+            result = await cartService.updateQuantityProduct(cartId, productId, quantity)
         }
         else {
             result = cartService.addProductCart(cartId, productId, quantity)

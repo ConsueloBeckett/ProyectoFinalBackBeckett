@@ -61,7 +61,7 @@ app.use("/api/products", ProductsRouter)
 
 
 
-app.get('/loggerPrueba', function (req, res) {
+app.get('/loggerTry', function (req, res) {
     req.logger.error("Error message")
      req.logger.warn("Warning message")
      req.logger.info("Information message")

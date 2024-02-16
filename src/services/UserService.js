@@ -13,7 +13,7 @@ class UserService {
             }
             return newUser;
         } catch (error) {
-            console.error("Error to add to the userService: ", error);
+            req.logger.error("Error to add to the userService: ", error);
             return error;
         }
     }
@@ -26,20 +26,20 @@ class UserService {
             }
             return users;
         } catch (error) {
-            console.error("Error to obtain users: ", error);
+            req.logger.error("Error to obtain users: ", error);
             return error;
         }
     }
 
     obtainUserById = async (id) => {
         try {
-            const user = await this.userRepository.obtainUsersById(id);
+            const user = await this.userRepository.obtainUserById(id);
             if (!user) {
                 return "User not found";
             }
             return user;
         } catch (error) {
-            console.error("Error to obtain by id: ", error);
+            req.logger.error("Error to obtain by id: ", error);
             return error;
         }
     }
@@ -52,7 +52,7 @@ class UserService {
             }
             return user;
         } catch (error) {
-            console.error("Error to obtain by id email: ", error);
+            req.logger.error("Error to obtain by id email: ", error);
         }
     }
 
@@ -64,7 +64,7 @@ class UserService {
             }
             return updatedUser;
         } catch (error) {
-            console.error("Error to update the user: ", error);
+            req.logger.error("Error to update the user: ", error);
             return error;
         }
     }
@@ -77,7 +77,7 @@ class UserService {
             }
             return discardedUser;
         } catch (error) {
-            console.error("Error to deleted the user: ", error);
+            req.logger.error("Error to deleted the user: ", error);
             return error;
         }
     }
@@ -91,7 +91,7 @@ class UserService {
             return user;
         }
         catch (error) {
-            console.error("Error to validatet the user: ", error);
+            req.logger.error("Error to aprove the user: ", error);
             return error;
         }
     }
@@ -104,7 +104,7 @@ class UserService {
             }
             return user;
         } catch (error) {
-            console.error("Error to find the user: ", error);
+            req.logger.error("Error to find the user: ", error);
             return error;
         }
     }
@@ -118,11 +118,11 @@ class UserService {
 
             return email
         } catch (error) {
-            console.error("Error finding email: ", error);
+            req.logger.error("Error finding email: ", error);
             return error;
         }
     }
 
 }
 
-export default UserService
+export default UserService;

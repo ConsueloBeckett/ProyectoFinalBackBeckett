@@ -45,20 +45,20 @@ const initializePassport = () => {
     passport.use("login", new LocalStrategy({ usernameField: "email" }, async (username, password, done) => {
         try {
             const user = await userService.assetEmail({ email: username });
-           logger.log("User found:", user);
+           console.log("User found:", user);
 
             if (!user) {
                 return done(null, false, { message: "User not found" });
             }
             const isValid = await validPass(user, password);
-            logger.log("Password validation result:", isValid); 
+            console.log("Password validation result:", isValid); 
 
             if (!isValid) {
                 return done(null, false, { message: "Wrong password" });
             }
             user.last_connection = new Date();
             await userService.updateUser(user._id, user);
-            logger.log("Login successful. Authenticated user");
+            console.log("Login successful. Authenticated user");
             return done(null, user);
         } catch (error) {
             console.error("Error in login strategy:", error);

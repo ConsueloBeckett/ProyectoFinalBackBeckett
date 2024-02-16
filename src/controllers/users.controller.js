@@ -37,6 +37,8 @@ export async function loginUser(req, res) {
         req.session.age = user.age;
         req.session.user = user;
         req.session.last_connection = user.last_connection;
+        req.session.cartId = user.cartId;
+        req.session.userId = user._id;
         if (user.role === "admin") {
 
             res.redirect("/api/users/profile")
@@ -160,7 +162,7 @@ export async function changeRole(req, res) {
 
         let updatedUser;
         const documents = user.documents;
-        const documentAmount = documents.length;
+        const quantityDocuments = documents.length;
 
         if (quantityDocuments < 3) {
             return res.redirect("/documents");
@@ -190,7 +192,7 @@ export async function uploadDocuments(req, res) {
     let user = req.session.user;
     user.documents = req.files;
     await userService.updateUser(user._id, user);
-    res.send({ status: "success", message: "Files uploaded successfully" });
+    res.redirect("/api/users/profile");
 }
 
 export async function requestAllUsers(req, res) {

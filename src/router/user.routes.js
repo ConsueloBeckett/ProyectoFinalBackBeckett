@@ -9,7 +9,7 @@ const UserRouter = express.Router()
 
 UserRouter.post("/register",
     passport.authenticate("register",
-        { failureRedirect: "api/users/failregister" }), registerUser
+        { failureRedirect: "/api/users/failregister" }), registerUser
 )
 
 UserRouter.get("/failregister", async (req, res) => {
@@ -19,7 +19,7 @@ UserRouter.get("/failregister", async (req, res) => {
 
 UserRouter.post("/login",
     passport.authenticate("login",
-        { failureRedirect: "/fail login" }), loginUser
+        { failureRedirect: "/faillogin" }), loginUser
 )
 
 UserRouter.get("/faillogin", async (req, res) => {
@@ -79,7 +79,7 @@ UserRouter.get("/current", async (req, res) => {
 
 
         if (!user || user == null || user == undefined) {
-            req.logger.error("No se encontró el usuario")
+            req.logger.error("the user wasnt found")
             return res.redirect("/login")
         }
         const userData = {
